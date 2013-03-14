@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Auto-loop Preference"
+        >
+    	<CheckBoxPreference 
+            android:key="Checkbox1"
+            android:title="Loop Settings"
+            android:summaryOn="Auto:On"
+            android:summaryOff="Auto:Off"
+            android:defaultValue="false"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="Telephone Settings">
+        <EditTextPreference
+            android:key="EditTextPreference1"
+            android:title="Telephone Number"
+            android:summary="Please type country code first(eg:1)"
+            android:dialogTitle="Telephone Number Settings"
+            />
+        <ListPreference 
+            android:key="ListPreference1"
+            android:title="Phone Duration"
+            android:summary="Telephone time"
+            android:dialogTitle="Telephone duration1"
+			android:entries="@array/telephone_array_list"
+			android:entryValues="@array/telephone_array_value"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="SMS Settings">
+        <EditTextPreference 
+            android:key="EditTextPreference2"
+            android:title="Message Settings"
+            android:summary="text message here"
+            android:dialogTitle="SMS Settings"
+            />
+        <ListPreference 
+            android:key="ListPreference2"
+            android:title="SMS Number"
+            android:summary="How many message you want to send"
+            android:dialogTitle="SMS Number"
+            android:entries="@array/sms_array_list"
+            android:entryValues="@array/sms_array_value"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="Web Settings">
+        <EditTextPreference
+            android:key="EditTextPreference3"
+            android:title="Web Address"
+            android:summary="Please type web address here"
+            
+            android:dialogTitle="Web address Settings"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="Audio Files Settings">
+        <RingtonePreference
+            >
+            
+        </RingtonePreference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="GPS Settings">
+        
+        
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="3D Settings">
+        
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="NFC Settings">
+        
+    </PreferenceCategory>
+    
+</PreferenceScreen>
