@@ -42,6 +42,14 @@
             android:label="@string/menu_system">
             
         </activity>
+        <receiver
+            android:name="com.swipedevelopment.phonetester.BatteryWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                </intent-filter>
+                <meda-data android:name="android.appwidget.provider"
+                    android.resource="@xml/appwidget_info"/>          
+        </receiver>
     </application>
 <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
 <uses-permission android:name="android.permission.SEND_SMS"></uses-permission> 
@@ -64,6 +72,7 @@
 <uses-permission android:name="android.permission.BATTERY_STATS" />
 <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 <uses-permission android:name="android.permission.WRITE_SETTINGS" ></uses-permission>
+<uses-permission android:name="android.permission.NFC"></uses-permission>
 
  <uses-feature android:name="android.hardware.camera" />
  <uses-feature android:name="android.hardware.camera.autofocus" />
