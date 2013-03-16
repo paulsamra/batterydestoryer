@@ -18,12 +18,12 @@ package com.android.internal.telephony;
 
 import android.os.Bundle;
 import java.util.List;
-//TODO import android.telephony.NeighboringCellInfo;
+import android.telephony.NeighboringCellInfo;
 
 /**
  * Interface used to interact with the phone.  Mostly this is used by the 
  * TelephonyManager class.  A few places are still using this directly.
- * Please clean them up if possible and use TelephonyManager instead.
+ * Please clean them up if possible and use TelephonyManager insteadl.
  *
  * {@hide}
  */
@@ -208,7 +208,7 @@ interface ITelephony {
     /**
      * Returns the neighboring cell information of the device.
      */
-    //TODO List<NeighboringCellInfo> getNeighboringCellInfo();
+    List<NeighboringCellInfo> getNeighboringCellInfo();
 
      int getCallState();
      int getDataActivity();
