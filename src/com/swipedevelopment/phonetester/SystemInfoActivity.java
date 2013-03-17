@@ -2,9 +2,14 @@ package com.swipedevelopment.phonetester;
 
 import java.util.ArrayList;
 
+import com.swipedevelopment.sql.DatabaseManager;
+import com.swipedevelopment.sql.SystemInfoDatabase;
+
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,13 +32,23 @@ public class SystemInfoActivity extends Activity{
 	private final ArrayList<Integer> spinner2States = new ArrayList<Integer>();
 	SharedPreferences sharedPreference, sharedPreference2;
 	SharedPreferences.Editor editor;
+	DatabaseManager db_man;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-//		getFragmentManager().beginTransaction().replace(android.R.id.content, new SystemFragment()).commit();
+		//getFragmentManager().beginTransaction().replace(android.R.id.content, new SystemFragment()).commit();
 		setContentView(R.layout.system_info);
 		initialListview();
+		db_man = new DatabaseManager(this);
+		db_man.addTestFunction();
+		Cursor c = db_man.getTestFunctions();
+		while(c.moveToNext())
+		{
+			Log.d("CURSOR INFO", c.getString(0) + " " + c.getString(1) + " " + c.getString(2));
+		}
+		db_man.close();
 	}
 	private void initialListview() {
 		// TODO Auto-generated method stub

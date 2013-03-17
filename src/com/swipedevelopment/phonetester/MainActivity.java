@@ -41,11 +41,8 @@ public class MainActivity extends Activity {
 		telephonyManager.listen(signalListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		String deviceId = telephonyManager.getDeviceId();
 		telephoneID.setText(deviceId);
-		
-		
-		
-		
 	}
+	
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
