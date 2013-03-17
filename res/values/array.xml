@@ -48,4 +48,38 @@
     <item>9</item>
     <item>10</item>
 </string-array>
+<string-array name="volume_array_list">
+    <item>Low Volume</item>
+    <item>Medium Volume</item>
+    <item>High Volume</item>
+</string-array>
+<string-array name="volume_array_value">
+    <item>0</item>
+    <item>1</item>
+    <item>2</item>
+</string-array>
+<string-array name="brightness_array_list">
+    <item>Low </item>
+    <item>Adjust</item>
+    <item>Half</item>
+    <item>Full</item>    
+</string-array>
+<string-array name="brightness_array_value">
+    <item>0</item>
+    <item >1</item>
+    <item >2</item>
+    <item >3</item>
+</string-array>
+<string-array name="power_array_list">
+    <item >Low</item>
+    <item >Medium</item>
+    <item >High</item>
+    
+</string-array>
+<string-array name="power_array_value">
+    <item>0</item>
+    <item >1</item>
+    <item >2</item>
+  
+</string-array>
 </resources>
