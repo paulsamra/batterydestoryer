@@ -9,8 +9,9 @@ public class SystemInfoDatabase extends SQLiteOpenHelper
 	private final static String DATABASE_NAME = "systeminfo.db";
 	private final static int DATABASE_VERSION = 1;
 	public final static String TABLE_NAME = "testcases";
-	public final static String COLUMN_APP = "app";
-	public final static String COLUMN_TIME = "time";
+	public final static String COLUMN_ID = "id";
+	public final static String COLUMN_APP = "function";
+	public final static String COLUMN_DURATION = "duration";
 	public final static String COLUMN_CHECK = "valid";
 	
 
@@ -23,9 +24,15 @@ public class SystemInfoDatabase extends SQLiteOpenHelper
 	public void onCreate(SQLiteDatabase db) 
 	{
 		db.execSQL("create table " + TABLE_NAME
-				   + "( " + COLUMN_APP + " varchar"
-				   + ", " + COLUMN_TIME + " integer"
+				   + "( " + COLUMN_ID + " integer primary key"
+				   + ", " + COLUMN_APP + " integer"
+				   + ", " + COLUMN_DURATION + " integer"
 				   + ", " + COLUMN_CHECK + " integer);");
+		for(int i=0; i < 20; i++)
+		{
+			db.execSQL("insert into " +  TABLE_NAME + " values( " 
+						+ i + " , 0, 0, 0);");
+		}
 	}
 
 	@Override
