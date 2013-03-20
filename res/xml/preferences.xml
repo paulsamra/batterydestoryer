@@ -20,14 +20,7 @@
             android:summary="Please type country code first(eg:1)"
             android:dialogTitle="Telephone Number Settings"
             />
-        <ListPreference 
-            android:key="ListPreference1"
-            android:title="Phone Duration"
-            android:summary="Telephone time"
-            android:dialogTitle="Telephone duration1"
-			android:entries="@array/telephone_array_list"
-			android:entryValues="@array/telephone_array_value"
-            />
+	
     </PreferenceCategory>
     <PreferenceCategory 
         android:title="SMS Settings">
@@ -59,7 +52,11 @@
     <PreferenceCategory 
         android:title="Audio Files Settings">
         <RingtonePreference
-            >
+            android:key="ringtone"
+       	    android:title="Ringtone Preference"
+            android:showDefault="true"
+            android:showSilent="true"
+            android:summary="Pick a tone, any tone">
             
         </RingtonePreference>
     </PreferenceCategory>
@@ -89,7 +86,8 @@
             android:summary="Please choose a volume level"
             android:dialogTitle="Volume Level"
 			android:entries="@array/volume_array_list"
-			android:entryValues="@array/volume_array_value"/>
+			android:entryValues="@array/volume_array_value"
+			/>
     </PreferenceCategory>
     <PreferenceCategory 
         android:title="Screen Brightness Settings">

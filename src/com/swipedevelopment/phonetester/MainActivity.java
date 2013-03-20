@@ -1,29 +1,41 @@
 package com.swipedevelopment.phonetester;
 
+import com.swipedevelopment.service.MyService;
+
 import android.os.BatteryManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;	
 import android.app.Activity;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	TextView telephoneID,voltage,current,temperature,batteryStatus,batteryLevel,signalStrength_view;
+	TextView telephoneID,voltage,current,temperature,batteryStatus,batteryLevel,signalStrength_view,progressbar_text;
 	TelephonyManager telephonyManager;
 	SignalStrengthListener signalListener;
 	int dbm_result,asu_result, battery_voltage,level,scale;
 	double temper;
 	String battery_status;
 	Button run_btn;
-	
+	ProgressBar progressbar;
+	SharedPreferences mySharedPreferences;
+	boolean loop_preference;
+	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,location_preference,volume_preference,
+	power_preference,brightness_preference;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +53,21 @@ public class MainActivity extends Activity {
 		telephonyManager.listen(signalListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		String deviceId = telephonyManager.getDeviceId();
 		telephoneID.setText(deviceId);
+		progressbar = (ProgressBar)findViewById(R.id.progressbar);
+		progressbar.setVisibility(ProgressBar.INVISIBLE);
+		progressbar_text = (TextView)findViewById(R.id.progressbar_text);
+		run_btn = (Button)findViewById(R.id.button1);
+		run_btn.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				progressbar.setVisibility(ProgressBar.VISIBLE);
+				run();
+			}
+			
+		});
+		loadPref();
 	}
 	
 	protected void onPause() {
@@ -147,5 +174,41 @@ public class MainActivity extends Activity {
 		break;
 		}
         return true;
+	}
+	public void run(){
+		Intent serviceIntent = new Intent();
+		serviceIntent.setClass(MainActivity.this, MyService.class);
+		
+		serviceIntent.putExtra("loopStatus", loop_preference);
+		serviceIntent.putExtra("telephoneNum",telephone_preference);
+		serviceIntent.putExtra("smsDetail", sms_preference);
+		serviceIntent.putExtra("smsNumber", smsNum_preference);
+		serviceIntent.putExtra("ringtone", ringtone_preference);
+		serviceIntent.putExtra("location", location_preference);
+		serviceIntent.putExtra("volumeLevel", volume_preference);
+		serviceIntent.putExtra("brightness", brightness_preference);
+		serviceIntent.putExtra("powerMode", power_preference);
+		
+		this.startService(serviceIntent);
+//		System.out.println("run");
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+			
+			loadPref();
+		}
+	
+	private void loadPref(){
+		mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		loop_preference = mySharedPreferences.getBoolean("Checkbox1", false);
+		telephone_preference = mySharedPreferences.getString("EditTextPreference1", "");
+		sms_preference = mySharedPreferences.getString("EditTextPreference2", "");
+		smsNum_preference = mySharedPreferences.getString("ListPreference2", "");
+		ringtone_preference = mySharedPreferences.getString("ringtone", "<unset>");
+		location_preference = mySharedPreferences.getString("EditTextPreference4", "");
+		volume_preference = mySharedPreferences.getString("ListPreference3", "");
+		brightness_preference = mySharedPreferences.getString("ListPreference4", "");
+		power_preference = mySharedPreferences.getString("ListPreference5", "");
 	}
 }

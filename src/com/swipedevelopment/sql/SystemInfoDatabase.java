@@ -28,7 +28,7 @@ public class SystemInfoDatabase extends SQLiteOpenHelper
 				   + ", " + COLUMN_APP + " integer"
 				   + ", " + COLUMN_DURATION + " integer"
 				   + ", " + COLUMN_CHECK + " integer);");
-		for(int i=0; i < 20; i++)
+		for(int i=0; i < 25; i++)
 		{
 			db.execSQL("insert into " +  TABLE_NAME + " values( " 
 						+ i + " , 0, 0, 0);");

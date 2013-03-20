@@ -16,11 +16,11 @@ import android.widget.ListView;
 
 public class SystemInfoActivity extends Activity{
 	ListView listview;
-	BaseAdapter baseAdapter;
-	Component comp;
+//	BaseAdapter baseAdapter;
+//	Component comp;
 	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
-	SharedPreferences sharedPreference, sharedPreference2;
-	SharedPreferences.Editor editor;
+//	SharedPreferences sharedPreference, sharedPreference2;
+//	SharedPreferences.Editor editor;
 	DatabaseManager db_man;
 	
 	@Override
