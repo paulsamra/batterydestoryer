@@ -21,9 +21,15 @@ public class SystemInfoAdapter extends BaseAdapter
 	private ArrayList<RowInfo> row_state;
 	private Context context;
 	private final String[] action = {"None","Call","SMS","Wifi","Bluetooth","Camera"
-            ,"Video","Music","GPS","Website","NFC","3D"};
-	private final String[] duration = {"0 Min","5 Min","10 Min", "15 Min",
-			"25 Min", "30 Min","35 Min","40 Min","45 Min","50 Min", "55 Min"};
+            ,"Video Recorder","Ringtone","GPS","Web Browser","Email","NFC","3D"};
+	private final String[] duration = 
+		   {"0 Min","1 Min","2 Min","3 Min","4 Min","5 Min","6 Min","7 Min","8 Min","9 Min","10 Min", 
+			"11 Min","12 Min","13 Min","14 Min","15 Min","16 Min","17 Min","18 Min","19 Min","20 Min",
+			"21 Min","22 Min","23 Min","24 Min","25 Min","26 Min","27 Min","28 Min","29 Min","30 Min",
+			"31 Min","32 Min","33 Min","34 Min","35 Min","36 Min","37 Min","38 Min","39 Min","40 Min",
+			"41 Min","42 Min","43 Min","44 Min","45 Min","46 Min","47 Min","48 Min","49 Min","50 Min",
+			"51 Min","52 Min","53 Min","54 Min","55 Min","56 Min","57 Min","58 Min","59 Min","60 Min",
+	};
 	
 	public SystemInfoAdapter(ArrayList<RowInfo> row_state,Context context) {
 		this.row_state = row_state;

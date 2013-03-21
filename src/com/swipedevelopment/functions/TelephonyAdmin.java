@@ -78,7 +78,7 @@ public class TelephonyAdmin {
 	    }
 	  public void callPhone(String callphoneNumber) throws RemoteException{
 		  		
-				String callnumber = "+1"+ callphoneNumber;	
+				String callnumber = callphoneNumber;	
 				
 				if(isCalling == false){ 
 					getTelephony();

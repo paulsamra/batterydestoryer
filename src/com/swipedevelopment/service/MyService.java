@@ -1,6 +1,6 @@
 package com.swipedevelopment.service;
 
-
+import java.util.ArrayList;
 
 import com.swipedevelopment.functions.AudioAdmin;
 import com.swipedevelopment.functions.BluetoothAdmin;
@@ -12,15 +12,22 @@ import com.swipedevelopment.functions.PowerAdmin;
 import com.swipedevelopment.functions.SMSAdmin;
 import com.swipedevelopment.functions.TelephonyAdmin;
 import com.swipedevelopment.functions.WifiAdmin;
+import com.swipedevelopment.phonetester.CameraViewer;
 import com.swipedevelopment.phonetester.MainActivity;
+import com.swipedevelopment.sql.DatabaseManager;
+import com.swipedevelopment.sql.RowInfo;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.widget.Toast;
 
 public class MyService extends IntentService{
 	private static final String TAG = "MyService";
@@ -33,10 +40,13 @@ public class MyService extends IntentService{
 	BluetoothAdmin bluetoothAdmin;
 	CameraAdmin cameraAdmin;
 	EmailAdmin emailAdmin;
-	MusicAdmin musicAdmin;
 	NFCAdmin nfcAdmin;
 	AudioAdmin audioAdmin;
-	Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11;
+	Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12;
+	DatabaseManager db_man;
+	int sp1Int,sp2Int,checkInt;
+
+	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -63,8 +73,28 @@ public class MyService extends IntentService{
 		volume = intent.getStringExtra("volumeLevel");
 		brightness = intent.getStringExtra("brightness");
 		powermode = intent.getStringExtra("powerMode");
-//		action();
+		
+//		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail + " number " + smsNum +
+//				" ringtone "+ ringtone + " location "+ location + " volume " + volume + " brightness " + brightness +" power "+ powermode);
+		db_man = new DatabaseManager(this);
+		Cursor c = db_man.getTestFunctions();
+		for(int i = 0; c.moveToNext(); i++){
+			row_state.add(new RowInfo());
+			RowInfo ri = row_state.get(i);
+			ri.setApp(c.getInt(1));
+			ri.setDuration(c.getInt(2));
+			ri.setChecked(c.getInt(3) == 1);
+			Log.d("CURSOR MAIN INFO", c.getString(1) + " " + c.getString(2) + " " + c.getString(3));
+			int sp1Int = Integer.parseInt(c.getString(1));
+			int sp2Int = Integer.parseInt(c.getString(2));
+			int checkInt = Integer.parseInt(c.getString(3));
+			if(checkInt == 1){
+				action(sp1Int, sp2Int);
+				System.out.println(sp1Int);
+			}
+		}
 	}
+
 	Handler handler = new Handler(){
 
 		@Override
@@ -72,6 +102,7 @@ public class MyService extends IntentService{
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			
+//			Toast.makeText(getApplicationContext(), "handler..", Toast.LENGTH_SHORT).show();
 		}
 		
 	};
@@ -80,7 +111,16 @@ public class MyService extends IntentService{
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		System.out.println("onCreate");
+		Toast.makeText(getApplicationContext(), "start...", Toast.LENGTH_SHORT).show();
+		teleAdmin = new TelephonyAdmin(this);
+		smsAdmin = new SMSAdmin(this);
+		wifiAdmin = new WifiAdmin(this);
+		bluetoothAdmin = new BluetoothAdmin(this);
+		cameraAdmin = new CameraAdmin(this);
+//		emailAdmin = new EmailAdmin(this);
+//		nfcAdmin = new NFCAdmin(this);
+		audioAdmin = new AudioAdmin(this);
+		powerAdmin = new PowerAdmin(this);
 		
 	}
 
@@ -88,102 +128,40 @@ public class MyService extends IntentService{
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		System.out.println("onDestroy");
 	}
 
-public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durationInt) {
+public void action(final int sp1Int, final int sp2Int) {
 		
 		boolean canSwitch = true;
-		switch(sp1IntCom){
+		switch(sp1Int){
 		
 		case 0:
 			//None
 			break;
 		case 1:
-			//Pause
-			if(canSwitch){
-				canSwitch=false;
-			
-				System.out.println("actionController: Pause is chosen.");
-				powerAdmin.powerOption(sp2Int);
-				
-				//Pause
-				t2 = new Thread(new Runnable(){
-					
-					@Override
-					public  void run() {
-						// TODO Auto-generated method stub
-						int j = durationInt;
-						System.out.println("t2 thread is " + Thread.currentThread().getId());
-						System.out.println("initial pause run time = " + j);
-						for(;j>= 0 ; j--){
-							System.out.println("pause time left: " + j);
-							Message msg = Message.obtain(handler);
-							msg.what = j;
-							try {
-							     Thread.sleep(1000);
-						    }catch (InterruptedException e) {
-							    // TODO Auto-generated catch block
-							    e.printStackTrace();
-						     }
-							handler.sendMessage(msg);
-
-						}
-					}
-					
-				});
-				t2.start();
-				int j = durationInt;
-				for(;j >= 0; j--){
-	    			System.out.println("pause time left: " + j);
-	    			try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	    			if (j==0){
-	    				powerAdmin.releasePower(sp2Int);
-	    				canSwitch = true;
-	    			}
-			    }
-			break;
-			}
-			else{
-				break;
-			}
-		case 2:
 			//Call
 			if(canSwitch){
+				
+				Toast.makeText(getApplicationContext(), "call starts...", Toast.LENGTH_SHORT).show();
 				canSwitch = false;
-				audioAdmin.volumeOptionForCall(sp3Int);
-				powerAdmin.powerOption(sp2Int);
-//				try {
-//					Thread.sleep(2500);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
 				try {
 					teleAdmin.callPhone(telephoneNum);
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("actionController: Call is chosen ");
 				
-		        //call
 		        t1 = new Thread(new Runnable(){
 
 					@Override
 					public  void run() {
 						// TODO Auto-generated method stub
-						int j = durationInt;
-//						System.out.println("t1 thread is " + Thread.currentThread().getId());
+						int j = sp2Int *60;
 						System.out.println("initial call run time = " + j);
 						for(; j>=0;j--){
 							System.out.println("call time left: " + j);
 							Message msg = Message.obtain(handler);
+							
 							msg.what = j;
 							try {
 								Thread.sleep(1000);
@@ -198,9 +176,8 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 		        });
 		        t1.start();
 
-			int j = durationInt;
+			int j = sp2Int*60;
 			for(;j >= 0; j--){
-    			System.out.println("Rob's timer call time left: " + j);
     			try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -209,7 +186,7 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 				}
     			if (j==0){
     				teleAdmin.endCall();
-    				powerAdmin.releasePower(sp2Int);
+    				Toast.makeText(getApplicationContext(), "call ends...", Toast.LENGTH_SHORT).show();
     				canSwitch = true;
     			}
 		    }
@@ -217,56 +194,51 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 			}else{
 				break;
 			}
-		case 3:
+		case 2:
 			//SMS
 			if(canSwitch){
 				canSwitch = false;
 			
 				System.out.println("actionController: SMS is chosen.");
-				powerAdmin.powerOption(sp2Int);
+//				powerAdmin.powerOption(sp2Int);
 				int s = 1;
-				int smsNum = (int)(durationInt/60);
-				while(s < smsNum + 1){
+				int smsNumInt = Integer.parseInt(smsNum);
+				while(s < smsNumInt + 1){
 					System.out.println("actionController: SMS is chosen");
+					Toast.makeText(getApplicationContext(), "Messages are sending...", Toast.LENGTH_SHORT).show();
 					smsAdmin.sendSMS(telephoneNum, smsDetail);
 					System.out.println("actionController: this is No. " + s + " SMS.");
 				try {
 					Thread.sleep(1000);
-					System.out.println("actionController: SMS is done, thread sleep 1 secs");
+					
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	
 					s++;
 				}
-    			
-    			powerAdmin.releasePower(sp2Int);
+				Toast.makeText(getApplicationContext(), "SMS is done...", Toast.LENGTH_SHORT).show();
+//    			powerAdmin.releasePower(sp2Int);
 				break;
 			}else{
 				break;
 			}
 
-		case 4:
+		case 3:
 			//wifi
 			if(canSwitch){
 				canSwitch=false;			
 				System.out.println("actionController: wifi is chosen.");
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+//				Looper.prepare();
+				Toast.makeText(getApplicationContext(), "Wifi is on...", Toast.LENGTH_SHORT).show();
+//				Looper.loop();
 				wifiAdmin.openWifi();
-				powerAdmin.powerOption(sp2Int);
-
 				t3 = new Thread(new Runnable(){
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						int j = durationInt;
-						System.out.println("t3 thread is " + Thread.currentThread().getId());
+						int j = sp2Int*60;
 						System.out.println("initial wifi run time = " + j);
 						for(;j>= 0 ; j--){
 							System.out.println("wifi time left: " + j);
@@ -285,9 +257,8 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 					
 				});
 				t3.start();
-				int j = durationInt;
+				int j = sp2Int*60;
 				for(;j >= 0; j--){
-	    			System.out.println("wifi time left: " + j);
 	    			try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -296,7 +267,8 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 					}
 	    			if (j==0){
 	    				wifiAdmin.closeWifi();
-	    				powerAdmin.releasePower(sp2Int);
+//	    				powerAdmin.releasePower(sp2Int);
+	    				Toast.makeText(this.getApplication(), "Wifi is off...", Toast.LENGTH_SHORT).show();
 	    				canSwitch = true;
 	    			}
 			    }
@@ -304,44 +276,31 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 			}else{
 				break;
 			}
-			case 5:
+			case 4:
 			//bluetooth
 			if(canSwitch){
 				canSwitch=false;
-
 				System.out.println("actionController: bluetooth is chosen");
-				powerAdmin.powerOption(sp2Int);
-				audioAdmin.volumeOptionForMusic(sp3Int);
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				//BT
+				Toast.makeText(getApplicationContext(), "Bluetooth is on...", Toast.LENGTH_SHORT).show();
+//				powerAdmin.powerOption(sp2Int);
+				bluetoothAdmin.openBluetooth();
 				t4 = new Thread(new Runnable(){
 					
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						int j = durationInt;
-						System.out.println("t4 thread is " + Thread.currentThread().getId());
+						int j = sp2Int*60;
 						System.out.println("initial BT run time = " + j);
 						for(;j>= 0 ; j--){
 							System.out.println("BT time left: " + j);
 							Message msg = Message.obtain(handler);
 							msg.what = j;
-							try {
-							     Thread.sleep(1000);
-						    }catch (InterruptedException e) {
-							    // TODO Auto-generated catch block
-							    e.printStackTrace();
-						     }
-							if(j == durationInt){
-								bluetoothAdmin.openBluetooth();
+			    			try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-//							else if(j == durationInt -5){
-//								musicAdmin.playMusic(musicFile);
 //							}
 							handler.sendMessage(msg);
 
@@ -350,7 +309,7 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 					
 				});
 				t4.start();
-				int j = durationInt;
+				int j = sp2Int*60;
 				for(;j >= 0; j--){
 	    			System.out.println("BT time left: " + j);
 	    			try {
@@ -360,9 +319,10 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 						e.printStackTrace();
 					}
 	    			if (j==0){
-	    				musicAdmin.stopMusic();
+
 	    				bluetoothAdmin.closeBluetooth();
-	    				powerAdmin.releasePower(sp2Int);
+	    				Toast.makeText(getApplicationContext(), "Bluetooth is off...", Toast.LENGTH_SHORT).show();
+//	    				powerAdmin.releasePower(sp2Int);
 	    				canSwitch = true;
 	    			}
 			    }
@@ -370,139 +330,70 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 			}else{
 				break;
 			}
-		case 6:
+		case 5:
 			//camera
-//			if(canSwitch){
-//				canSwitch=false;
+			if(canSwitch){
+				canSwitch=false;
 //			    powerAdmin.powerOption(sp2Int);
-////			    try {
-////					Thread.sleep(1000);
-////				} catch (InterruptedException e) {
-////					// TODO Auto-generated catch block
-////					e.printStackTrace();
-////				}
-//				int c = 0;
-//				int shotNum = (int)(durationInt/60);
-//				while(c< shotNum){
-//					    takePic();
-//					try {
-//						Thread.sleep(3000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//    				returnMain();
-//    				cameraAdmin.releaseCamera();
-//					try {
-//						Thread.sleep(1500);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//    				c++;
-//    				}
-//				
-//    			powerAdmin.releasePower(sp2Int);
-//    			
-//		        canSwitch = true;
-//				break;
-//			}else{
-//				break;
-//			}
-			case 7:
-				//camera snapshot
-				if(canSwitch){
-					canSwitch=false;
-//					audioAdmin.playSnapshotVoice(this);
-				    powerAdmin.powerOption(sp2Int);
-				    try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				t10 = new Thread(new Runnable(){
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						int c = (durationInt + 2)*10;
-						System.out.println("t10 thread snapshot is: " + Thread.currentThread().getId());
-						System.out.println("initial snapshot run time is: " + c);
-						for(;c >= 0; c--){
-							if(c == durationInt*10 ){
-								audioAdmin.stopVoice1();
-							}
-							snapshot();
-							System.out.println("timer1 snapshot time left:" + c);
-							Message msg = Message.obtain(handler);
-							msg.what= c;
-							try {
-								Thread.sleep(100);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							handler.sendMessage(msg);
-							if(c == 0){
-								powerAdmin.releasePower(sp2Int);
-								returnMain();
-							
-								}
-						}
-					}
-					
-				});
-				t10.start();
-				
-					int c = durationInt + 3;
-					for(; c >= 0; c--){
-						System.out.println("timer2 snapshot left time: " + c);
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						if(c == 0){
-						canSwitch = true;
-						
-						}
-					}
-					
-					break;
-				}else{
-					break;
+				Toast.makeText(getApplicationContext(), "Camera is on...", Toast.LENGTH_SHORT).show();
+			    try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			case 8:
-				//camera recording
-				if(canSwitch){
-					canSwitch=false;
-					
-//					powerAdmin.powerOption(sp2Int);
+				int c = 0;
+				int shotNum = (int)(sp2Int/60);
+				while(c< shotNum){
+					    takePic();
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-//					audioAdmin.playVideoVoice(this);
+    				returnMain();
+    				cameraAdmin.releaseCamera();
+					try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+    				c++;
+    				}
+				Toast.makeText(getApplicationContext(), "Camera is off...", Toast.LENGTH_SHORT).show();
+//    			powerAdmin.releasePower(sp2Int);
+    			
+		        canSwitch = true;
+				break;
+			}else{
+				break;
+			}
+
+			case 6:
+				//camera recorder
+				if(canSwitch){
+					canSwitch=false;
+					Toast.makeText(getApplicationContext(), "Video recorder is on...", Toast.LENGTH_SHORT).show();
+//					powerAdmin.powerOption(sp2Int);
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					t11 = new Thread(new Runnable(){
 
 						@Override
 						public void run() {
 							
 							// TODO Auto-generated method stub
-							int c = durationInt + 5;
-							System.out.println("t11 thread videoRecording is: " + Thread.currentThread().getId());
+							int c = sp2Int*60;
 							System.out.println("initial videoRecording run time is: " + c);
 							for(;c>= 0; c--){
-								if(c == durationInt + 2){
-									audioAdmin.stopVoice2();
-								}else if(c == durationInt){
-									videoRecording();
-								}
-							
+								videoRecording();
 							System.out.println("video recording time left: " + c);
 							Message msg = Message.obtain(handler);
 							msg.what = c;
@@ -516,6 +407,7 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 							if(c == 0){
 								
 								returnMain();
+								
 							}
 							}
 							
@@ -524,9 +416,9 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 					});
 					t11.start();
 					
-					int c = durationInt + 3;
+					int c = sp2Int*60;
 			    	for(; c >= 0; c--){
-					System.out.println("timer2 videoRecording time left: " + c);
+					System.out.println("videoRecording time left: " + c);
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -535,6 +427,7 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 					}
 					if(c == 0){
 //					powerAdmin.releasePower(sp2Int);
+					Toast.makeText(getApplicationContext(), "Video recorder is off...", Toast.LENGTH_SHORT).show();
 					canSwitch = true;	
 					}
 				}
@@ -542,312 +435,274 @@ public void action(int sp1IntCom, final int sp2Int, int sp3Int, final int durati
 				}else{
 					break;
 				}
-		case 9:
-			//video
-			if(canSwitch){
-				canSwitch=false;
-				
-				powerAdmin.powerOption(sp2Int);
-				audioAdmin.volumeOptionForMusic(sp3Int);
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-//				System.out.println("check videoFile " + videoFile);
-//				playVideo();
-//				videoAdmin.playVideo(videoFile);
-				t6 = new Thread(new Runnable(){
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						int j = durationInt;
-						System.out.println("t6 thread is " + Thread.currentThread().getId());
-						System.out.println("initial video run time = " + j);
-						for(;j>= 0 ; j--){
-							System.out.println("video time left: " + j);
-							Message msg = Message.obtain(handler);
-							msg.what = j;
-							try {
-							     Thread.sleep(1000);
-						    }catch (InterruptedException e) {
-							    // TODO Auto-generated catch block
-							    e.printStackTrace();
-						     }
-							if(j == durationInt - 1){
-//								playVideo();
-							}
-							handler.sendMessage(msg);
-
-						}
-					}
-					
-				});
-				t6.start();
-				int j = durationInt;
-				for(;j >= 0; j--){
-	    			System.out.println("video time left: " + j);
-	    			try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	    			if (j==0){
-	    				powerAdmin.releasePower(sp2Int);
-//	    				videoAdmin.stopVideo();
-	    				returnMain();
-	    				canSwitch = true;
-	    			}
-			    }
-				break;
-			}else{
-				break;
-			}
-		case 10:
-			//music
-			if(canSwitch){
-				canSwitch=false;
-			
-				System.out.println("actionController: music is chosen.");
-				powerAdmin.powerOption(sp2Int);
-				audioAdmin.volumeOptionForMusic(sp3Int);
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if(!musicAdmin.checkPlaying()){
-//					musicAdmin.playMusic(musicFile);
-					//music
-					t7 = new Thread(new Runnable(){
-						
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							int j = durationInt;
-							System.out.println("t7 thread is " + Thread.currentThread().getId());
-							System.out.println("initial music run time = " + j);
-							for(;j>= 0 ; j--){
-								System.out.println("Wei's timer music time left: " + j);
-								Message msg = Message.obtain(handler);
-								msg.what = j;
-								try {
-								     Thread.sleep(1000);
-							    }catch (InterruptedException e) {
-								    // TODO Auto-generated catch block
-								    e.printStackTrace();
-							     }
-								handler.sendMessage(msg);
-
-							}
-						}
-						
-					});
-					t7.start();
-					int j = durationInt;
-					for(;j >= 0; j--){
-		    			System.out.println("time left: " + j);
-		    			try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-		    			if (j==0){
-		    				musicAdmin.stopMusic();
-		    				powerAdmin.releasePower(sp2Int);
-		    				canSwitch = true;
-		    			}
-				    }
-				}
-			break;
-			}else {
-				break;
-			}
-			case 11:
-			//GPS
-				if(canSwitch){
-					canSwitch=false;
-			
-				System.out.println("actionController: GPS is chosen");
-				powerAdmin.powerOption(sp2Int);
-				if(sp3Int == 4){
-					wifiAdmin.openWifi();
-				}
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-//				openGPS(sp3Int);
-
-				t8 = new Thread(new Runnable(){
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						int j = durationInt;
-						System.out.println("t8 thread is " + Thread.currentThread().getId());
-						System.out.println("initial gps run time = " + j);
-						for(;j>= 0 ; j--){
-							System.out.println("gps time left: " + j);
-							Message msg = Message.obtain(handler);
-							msg.what = j;
-							
-							try {
-							     Thread.sleep(1000);
-						    }catch (InterruptedException e) {
-							    // TODO Auto-generated catch block
-							    e.printStackTrace();
-						     }
-							
-							handler.sendMessage(msg);
-
-						}
-					}
-					
-				});
-				t8.start();
-				int j = durationInt;
-				for(;j >= 0; j--){
-	    			System.out.println("gps time left: " + j);
-	    			try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	    			if (j==0){
-	    				//gps close
-	    				powerAdmin.releasePower(sp2Int);
-//	    				wifiAdmin.closeWifi();
-	    				if(sp3Int == 4){
-	    					wifiAdmin.closeWifi();
-	    					returnMain();
-//	    					turnGPSOnOff();
-	    				}
-	    				if(sp3Int == 5){
-//	    					turnGPSOnOff();
-	    				}
-	    				canSwitch = true;
-	    			}
-			    }
-				break;
-				}
-				else{
-					break;
-				}
-		case 12:
-			//website
-			if(canSwitch){
-				canSwitch=false;
-			
-				System.out.println("actionController: website is chosen");
-				powerAdmin.powerOption(sp2Int);
-				wifiAdmin.openWifi();
+		case 7:
+			//ringtone
+//			if(canSwitch){
+//				canSwitch=false;
+//			
+//				System.out.println("actionController: ringtone is chosen.");
+////				powerAdmin.powerOption(sp2Int);
+////				audioAdmin.volumeOptionForMusic(sp3Int);
 //				try {
 //					Thread.sleep(1000);
 //				} catch (InterruptedException e) {
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
-				
-
-				t9 = new Thread(new Runnable(){
-					
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						System.out.println("t9 thread is " + Thread.currentThread().getId());
-						if(durationInt >= 10){
-							System.out.println("initial website loop times = " + durationInt);
-							for(int i = 0; i<durationInt ; i++){
-							Message msg = Message.obtain(handler);
-							msg.what = i;
-							
-							if(i%10 == 0){								
-//								switchWeb(count);								
-//								count++;
-							}
-
-							try {
-							     Thread.sleep(1000);
-						    }catch (InterruptedException e) {
-							    // TODO Auto-generated catch block
-							    e.printStackTrace();
-						     }
-							handler.sendMessage(msg);
-
-						    }	
-						}else{
-							System.out.println("website time is less than 10 secs");
-							int j = durationInt;
-							System.out.println("actionController: switch to web01...");
-//							openWebsite(web01);
-							for(;j>=0;j--){
-								
-								Message msg = Message.obtain(handler);
-								msg.what = j;
-								try {
-								     Thread.sleep(1000);
-							    }catch (InterruptedException e) {
-								    // TODO Auto-generated catch block
-								    e.printStackTrace();
-							     }
-								handler.sendMessage(msg);
-							}
-							
-							
-						}
-					}
-					
-				});
-				t9.start();
-				int j = durationInt + 2;
-				for(;j >= 0; j--){
-	    			System.out.println("Rob's timer website time left: " + j);
-	    			try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	    			if (j==0){
-	    				
-	    				wifiAdmin.closeWifi();
-	    				powerAdmin.releasePower(sp2Int);
-	    				canSwitch = true;
-	    				returnMain();
-	    			}
-			    }
+//				if(!musicAdmin.checkPlaying()){
+////					musicAdmin.playMusic(musicFile);
+//					//music
+//					t7 = new Thread(new Runnable(){
+//						
+//						@Override
+//						public void run() {
+//							// TODO Auto-generated method stub
+//							int j = durationInt;
+//							System.out.println("t7 thread is " + Thread.currentThread().getId());
+//							System.out.println("initial music run time = " + j);
+//							for(;j>= 0 ; j--){
+//								System.out.println("Wei's timer music time left: " + j);
+//								Message msg = Message.obtain(handler);
+//								msg.what = j;
+//								try {
+//								     Thread.sleep(1000);
+//							    }catch (InterruptedException e) {
+//								    // TODO Auto-generated catch block
+//								    e.printStackTrace();
+//							     }
+//								handler.sendMessage(msg);
+//
+//							}
+//						}
+//						
+//					});
+//					t7.start();
+//					int j = durationInt;
+//					for(;j >= 0; j--){
+//		    			System.out.println("time left: " + j);
+//		    			try {
+//							Thread.sleep(1000);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//						}
+//		    			if (j==0){
+//		    				musicAdmin.stopMusic();
+//		    				powerAdmin.releasePower(sp2Int);
+//		    				canSwitch = true;
+//		    			}
+//				    }
+//				}
+//			break;
+//			}else {
+//				break;
+//			}
+			case 8:
+			//GPS
+//				if(canSwitch){
+//					canSwitch=false;
+//			
+//				System.out.println("actionController: GPS is chosen");
+//				powerAdmin.powerOption(sp2Int);
+//				if(sp3Int == 4){
+//					wifiAdmin.openWifi();
+//				}
+//				try {
+//					Thread.sleep(2000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+////				openGPS(sp3Int);
+//
+//				t8 = new Thread(new Runnable(){
+//					
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						int j = durationInt;
+//						System.out.println("t8 thread is " + Thread.currentThread().getId());
+//						System.out.println("initial gps run time = " + j);
+//						for(;j>= 0 ; j--){
+//							System.out.println("gps time left: " + j);
+//							Message msg = Message.obtain(handler);
+//							msg.what = j;
+//							
+//							try {
+//							     Thread.sleep(1000);
+//						    }catch (InterruptedException e) {
+//							    // TODO Auto-generated catch block
+//							    e.printStackTrace();
+//						     }
+//							
+//							handler.sendMessage(msg);
+//
+//						}
+//					}
+//					
+//				});
+//				t8.start();
+//				int j = durationInt;
+//				for(;j >= 0; j--){
+//	    			System.out.println("gps time left: " + j);
+//	    			try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//	    			if (j==0){
+//	    				//gps close
+//	    				powerAdmin.releasePower(sp2Int);
+////	    				wifiAdmin.closeWifi();
+//	    				if(sp3Int == 4){
+//	    					wifiAdmin.closeWifi();
+//	    					returnMain();
+////	    					turnGPSOnOff();
+//	    				}
+//	    				if(sp3Int == 5){
+////	    					turnGPSOnOff();
+//	    				}
+//	    				canSwitch = true;
+//	    			}
+//			    }
+//				break;
+//				}
+//				else{
+//					break;
+//				}
+		case 9:
+			//web browser
+//			if(canSwitch){
+//				canSwitch=false;
+//			
+//				System.out.println("actionController: website is chosen");
+//				powerAdmin.powerOption(sp2Int);
+//				wifiAdmin.openWifi();
+////				try {
+////					Thread.sleep(1000);
+////				} catch (InterruptedException e) {
+////					// TODO Auto-generated catch block
+////					e.printStackTrace();
+////				}
+//				
+//
+//				t9 = new Thread(new Runnable(){
+//					
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						System.out.println("t9 thread is " + Thread.currentThread().getId());
+//						if(durationInt >= 10){
+//							System.out.println("initial website loop times = " + durationInt);
+//							for(int i = 0; i<durationInt ; i++){
+//							Message msg = Message.obtain(handler);
+//							msg.what = i;
+//							
+//							if(i%10 == 0){								
+////								switchWeb(count);								
+////								count++;
+//							}
+//
+//							try {
+//							     Thread.sleep(1000);
+//						    }catch (InterruptedException e) {
+//							    // TODO Auto-generated catch block
+//							    e.printStackTrace();
+//						     }
+//							handler.sendMessage(msg);
+//
+//						    }	
+//						}else{
+//							System.out.println("website time is less than 10 secs");
+//							int j = durationInt;
+//							System.out.println("actionController: switch to web01...");
+////							openWebsite(web01);
+//							for(;j>=0;j--){
+//								
+//								Message msg = Message.obtain(handler);
+//								msg.what = j;
+//								try {
+//								     Thread.sleep(1000);
+//							    }catch (InterruptedException e) {
+//								    // TODO Auto-generated catch block
+//								    e.printStackTrace();
+//							     }
+//								handler.sendMessage(msg);
+//							}
+//							
+//							
+//						}
+//					}
+//					
+//				});
+//				t9.start();
+//				int j = durationInt + 2;
+//				for(;j >= 0; j--){
+//	    			System.out.println("Rob's timer website time left: " + j);
+//	    			try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//	    			if (j==0){
+//	    				
+//	    				wifiAdmin.closeWifi();
+//	    				powerAdmin.releasePower(sp2Int);
+//	    				canSwitch = true;
+//	    				returnMain();
+//	    			}
+//			    }
+//				break;
+//			
+//		  }else{
+//				break;
+//			}
+		case 10:
+			//email
+			if(canSwitch){
+				Toast.makeText(getApplicationContext(), "email is sending...", Toast.LENGTH_SHORT).show();
 				break;
-			
-		  }
-
+			}else{
+				break;
+			}
+		case 11:
+			//NFC
+			if(canSwitch){
+				Toast.makeText(getApplicationContext(), "NFC is on...", Toast.LENGTH_SHORT).show();
+				break;
+			}else{
+				break;
+			}
+		case 12:
+			//3D
+			if(canSwitch){
+				Toast.makeText(getApplicationContext(), "3D graphic is playing...", Toast.LENGTH_SHORT).show();
+				break;
+			}else{
+				break;
+			}
 		}
 		
 	}
-public void snapshot(){
-	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //调用照相机
-	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	startActivity(intent);
-}
-public void returnMain(){
+
+private void returnMain(){
 	   Intent intent = new Intent(this, MainActivity.class);
 	   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	   startActivity(intent);
 }
-public void videoRecording(){
+private void videoRecording(){
 	Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	startActivity(intent);
 }
-public void openGPS(String location){
+private void openGPS(String location){
 	
+}
+public void takePic(){
+	Intent intent = new Intent(this, CameraViewer.class);
+	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+	startActivity(intent);
 }
 }

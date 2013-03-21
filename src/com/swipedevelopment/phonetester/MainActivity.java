@@ -1,6 +1,10 @@
 package com.swipedevelopment.phonetester;
 
+import java.util.ArrayList;
+
 import com.swipedevelopment.service.MyService;
+import com.swipedevelopment.sql.DatabaseManager;
+import com.swipedevelopment.sql.RowInfo;
 
 import android.os.BatteryManager;
 import android.os.Bundle;
@@ -14,7 +18,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +42,8 @@ public class MainActivity extends Activity {
 	boolean loop_preference;
 	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,location_preference,volume_preference,
 	power_preference,brightness_preference;
-	
+	DatabaseManager db_man;
+	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,6 +75,7 @@ public class MainActivity extends Activity {
 			
 		});
 		loadPref();
+//		loadDB();
 	}
 	
 	protected void onPause() {
@@ -210,5 +218,22 @@ public class MainActivity extends Activity {
 		volume_preference = mySharedPreferences.getString("ListPreference3", "");
 		brightness_preference = mySharedPreferences.getString("ListPreference4", "");
 		power_preference = mySharedPreferences.getString("ListPreference5", "");
+	}
+	private void loadDB(){
+		db_man = new DatabaseManager(this);
+		try{
+			Cursor c = db_man.getTestFunctions();
+			for(int i = 0; c.moveToNext(); i++){
+				row_state.add(new RowInfo());
+				RowInfo ri = row_state.get(i);
+				ri.setApp(c.getInt(1));
+				ri.setDuration(c.getInt(2));
+				ri.setChecked(c.getInt(3) == 1);
+				Log.d("CURSOR MAIN INFO", c.getString(1) + " " + c.getString(2) + " " + c.getString(3));
+			}	
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
 	}
 }

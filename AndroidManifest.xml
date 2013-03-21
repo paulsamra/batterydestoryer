@@ -13,6 +13,17 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <receiver
+            android:name="com.swipedevelopment.phonetester.BatteryWidget"
+            android:label="@string/app_name"
+            android:icon="@drawable/ic_launcher">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="COM.LJQ.ACTION.WIDGET.CLICK"/>
+            </intent-filter>
+            <meda-data android:name="android.appwidget.provider"
+                    android:resource="@xml/appwidget_info"/>          
+        </receiver> 
         <activity
             android:name="com.swipedevelopment.phonetester.Splash"
             >
@@ -24,32 +35,17 @@
         </activity>
         <activity
             android:name="com.swipedevelopment.phonetester.MainActivity"
-            android:label="@string/app_name">
-            
-        </activity>
+            android:label="@string/app_name"></activity> 
         <activity
             android:name="com.swipedevelopment.phonetester.AboutActivity"
-            android:label="@string/menu_about">
-            
-        </activity>
+            android:label="@string/menu_about"></activity>
         <activity
             android:name="com.swipedevelopment.phonetester.PreferencesActivity"
-            android:label="@string/menu_settings">
-            
-        </activity>
+            android:label="@string/menu_settings"></activity>
         <activity
             android:name="com.swipedevelopment.phonetester.SystemInfoActivity"
-            android:label="@string/menu_system">
-            
-        </activity>
-        <receiver
-            android:name="com.swipedevelopment.phonetester.BatteryWidget">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                </intent-filter>
-                <meda-data android:name="android.appwidget.provider"
-                    android.resource="@xml/appwidget_info"/>          
-        </receiver>
+            android:label="@string/menu_system"></activity>
+
         <service android:enabled="true" android:name="com.swipedevelopment.service.MyService"></service>
     </application>
 <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
