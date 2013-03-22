@@ -74,6 +74,7 @@ public class SystemInfoAdapter extends BaseAdapter
 		checkbox.setChecked(row_state.get(position).isChecked());
 			
 		final int row_pos = position;
+		
 		spinner_app.setOnItemSelectedListener(new Spinner.OnItemSelectedListener(){
 
 			@Override
