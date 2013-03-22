@@ -2,10 +2,10 @@ package com.swipedevelopment.service;
 
 import java.util.ArrayList;
 
+import com.swipedevelopment.email.EmailAdmin;
 import com.swipedevelopment.functions.AudioAdmin;
 import com.swipedevelopment.functions.BluetoothAdmin;
 import com.swipedevelopment.functions.CameraAdmin;
-import com.swipedevelopment.functions.EmailAdmin;
 import com.swipedevelopment.functions.MusicAdmin;
 import com.swipedevelopment.functions.NFCAdmin;
 import com.swipedevelopment.functions.PowerAdmin;

@@ -2,6 +2,7 @@ package com.swipedevelopment.phonetester;
 
 import java.util.ArrayList;
 
+import com.swipedevelopment.email.EmailAdmin;
 import com.swipedevelopment.service.MyService;
 import com.swipedevelopment.sql.DatabaseManager;
 import com.swipedevelopment.sql.RowInfo;
@@ -48,6 +49,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
 		telephoneID = (TextView)findViewById(R.id.textView2);
 		voltage = (TextView)findViewById(R.id.textView4);
 		current = (TextView)findViewById(R.id.textView6);
@@ -74,8 +76,9 @@ public class MainActivity extends Activity {
 			}
 			
 		});
+		
 		loadPref();
-//		loadDB();
+		//loadDB();
 	}
 	
 	protected void onPause() {
