@@ -7,11 +7,9 @@ import com.swipedevelopment.sql.RowInfo;
 import com.swipedevelopment.sql.SystemInfoAdapter;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 public class SystemInfoActivity extends Activity{
