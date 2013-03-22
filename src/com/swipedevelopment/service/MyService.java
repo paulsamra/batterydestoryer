@@ -74,8 +74,8 @@ public class MyService extends IntentService{
 		brightness = intent.getStringExtra("brightness");
 		powermode = intent.getStringExtra("powerMode");
 		
-//		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail + " number " + smsNum +
-//				" ringtone "+ ringtone + " location "+ location + " volume " + volume + " brightness " + brightness +" power "+ powermode);
+ 		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail + " number " + smsNum +
+ 				" ringtone "+ ringtone + " location "+ location + " volume " + volume + " brightness " + brightness +" power "+ powermode);
 		db_man = new DatabaseManager(this);
 		Cursor c = db_man.getTestFunctions();
 		for(int i = 0; c.moveToNext(); i++){
@@ -119,15 +119,17 @@ public class MyService extends IntentService{
 		cameraAdmin = new CameraAdmin(this);
 //		emailAdmin = new EmailAdmin(this);
 //		nfcAdmin = new NFCAdmin(this);
-		audioAdmin = new AudioAdmin(this);
-		powerAdmin = new PowerAdmin(this);
 		
+		
+		powerOptions(powermode);
+		audioOptions(volume);
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
+		powerRelease(powermode);
 	}
 
 public void action(final int sp1Int, final int sp2Int) {
@@ -200,7 +202,6 @@ public void action(final int sp1Int, final int sp2Int) {
 				canSwitch = false;
 			
 				System.out.println("actionController: SMS is chosen.");
-//				powerAdmin.powerOption(sp2Int);
 				int s = 1;
 				int smsNumInt = Integer.parseInt(smsNum);
 				while(s < smsNumInt + 1){
@@ -217,8 +218,9 @@ public void action(final int sp1Int, final int sp2Int) {
 				}	
 					s++;
 				}
+
 				Toast.makeText(getApplicationContext(), "SMS is done...", Toast.LENGTH_SHORT).show();
-//    			powerAdmin.releasePower(sp2Int);
+
 				break;
 			}else{
 				break;
@@ -229,9 +231,9 @@ public void action(final int sp1Int, final int sp2Int) {
 			if(canSwitch){
 				canSwitch=false;			
 				System.out.println("actionController: wifi is chosen.");
-//				Looper.prepare();
+
 				Toast.makeText(getApplicationContext(), "Wifi is on...", Toast.LENGTH_SHORT).show();
-//				Looper.loop();
+
 				wifiAdmin.openWifi();
 				t3 = new Thread(new Runnable(){
 					
@@ -267,7 +269,7 @@ public void action(final int sp1Int, final int sp2Int) {
 					}
 	    			if (j==0){
 	    				wifiAdmin.closeWifi();
-//	    				powerAdmin.releasePower(sp2Int);
+
 	    				Toast.makeText(this.getApplication(), "Wifi is off...", Toast.LENGTH_SHORT).show();
 	    				canSwitch = true;
 	    			}
@@ -282,7 +284,7 @@ public void action(final int sp1Int, final int sp2Int) {
 				canSwitch=false;
 				System.out.println("actionController: bluetooth is chosen");
 				Toast.makeText(getApplicationContext(), "Bluetooth is on...", Toast.LENGTH_SHORT).show();
-//				powerAdmin.powerOption(sp2Int);
+
 				bluetoothAdmin.openBluetooth();
 				t4 = new Thread(new Runnable(){
 					
@@ -687,22 +689,54 @@ public void action(final int sp1Int, final int sp2Int) {
 		
 	}
 
-private void returnMain(){
-	   Intent intent = new Intent(this, MainActivity.class);
-	   intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	   startActivity(intent);
-}
-private void videoRecording(){
-	Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	startActivity(intent);
-}
-private void openGPS(String location){
+	private void returnMain(){
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
+	}
+	private void videoRecording(){
+		Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
+	}
+	private void openGPS(String location){
 	
-}
-public void takePic(){
-	Intent intent = new Intent(this, CameraViewer.class);
-	intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-	startActivity(intent);
-}
+	}
+	private void takePic(){
+		Intent intent = new Intent(this, CameraViewer.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
+	}
+	//run power audio and brightness mode
+	private void powerOptions(String powermode){
+		powerAdmin = new PowerAdmin(this);
+		try{
+			int mode = Integer.parseInt(powermode);
+			powerAdmin.powerOption(mode);
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		
+	}
+	
+	private void powerRelease(String powermode){
+		int mode = Integer.parseInt(powermode);
+		powerAdmin.releasePower(mode);
+	}
+	
+	
+	private void audioOptions(String audioLevel){
+		audioAdmin = new AudioAdmin(this);
+		try{
+			int vol = Integer.parseInt(audioLevel);
+			audioAdmin.volumeOptionForMusic(vol);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+		
+	}
+	private void brightnessOptions(String brightness){
+		
+	}
 }

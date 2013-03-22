@@ -50,7 +50,7 @@
             />
     </PreferenceCategory>
     <PreferenceCategory 
-        android:title="Audio Files Settings">
+        android:title="Ringtone Settings">
         <RingtonePreference
             android:key="ringtone"
        	    android:title="Ringtone Preference"
@@ -79,7 +79,7 @@
         
     </PreferenceCategory>
     <PreferenceCategory 
-        android:title="Audio Control Settings">
+        android:title="Volume Control Settings">
         <ListPreference 
             android:key="ListPreference3"
             android:title="Volume Level"
@@ -87,6 +87,7 @@
             android:dialogTitle="Volume Level"
 			android:entries="@array/volume_array_list"
 			android:entryValues="@array/volume_array_value"
+			android:defaultValue="@string/power_default_value"
 			/>
     </PreferenceCategory>
     <PreferenceCategory 
@@ -98,7 +99,9 @@
             android:dialogTitle="Brightness Level"
 			android:entries="@array/brightness_array_list"
 			android:entryValues="@array/brightness_array_value"
+			android:defaultValue="@string/power_default_value"
 			/>
+        
     </PreferenceCategory>
     <PreferenceCategory 
         android:title="Screen Power Control Settings">
@@ -108,6 +111,7 @@
             android:summary="Please choose a power mode"
             android:dialogTitle="Power Mode"
             android:entries="@array/power_array_list"
-            android:entryValues="@array/power_array_value"/>
+            android:entryValues="@array/power_array_value"
+            android:defaultValue="@string/power_default_value"/>
     </PreferenceCategory>
 </PreferenceScreen>

@@ -9,4 +9,5 @@
     <string name="logo_text">
         2013 Swipe Development.Inc. All rights reserved Swipe Development....
     </string>
+    <string name="power_default_value">1</string>
 </resources>

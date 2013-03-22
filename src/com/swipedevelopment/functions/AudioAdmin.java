@@ -37,28 +37,7 @@ public class AudioAdmin {
 //
 //		  
 //	}
-//	public void playVideoVoice(Context context){
-////		if(mediaPlayer2 == null){
-//		mediaPlayer2 = MediaPlayer.create(context, R.raw.beep4);
-//	    mediaPlayer2.setLooping(false);
-//	    if(mediaPlayer2 != null){
-//	    	mediaPlayer2.stop();
-//	    }
-//		try {
-//			mediaPlayer2.prepare();
-//		} catch (IllegalStateException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	    mediaPlayer2.start();	
-//	    System.out.println("beep4 is playing");
-////		}
-//		
-//	  
-//}
+
 	public void stopVoice1(){
 		if(mediaPlayer != null){
 			mediaPlayer.stop();
@@ -66,30 +45,22 @@ public class AudioAdmin {
 			System.out.println("voice1 stop");
 		}
 	}
-	public void stopVoice2(){
-		if(mediaPlayer2 != null){
-			mediaPlayer2.stop();
-			mediaPlayer2.release();
-			System.out.println("voice2 stop");
-		}
-	}
-	public void volumeOptionForMusic(int sp3Int){
-		switch(sp3Int){
+
+	public void volumeOptionForMusic(int audioLevel){
+		switch(audioLevel){
 		case 0:
-			audioManager.getMode();
-			break;
-	    case 1: 
-	    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_SHOW_UI);
-	    	System.out.println("Hey you choose high volume audio option.");
-	    	break;
-		case 2:
-			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(4), AudioManager.FLAG_SHOW_UI);
-			System.out.println("Hey you choose medium volume audio option.");
-			break;
-		case 3:
 			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(1), AudioManager.FLAG_SHOW_UI);
 			System.out.println("Hey you choose low volume audio option.");
 			break;
+
+		case 1:
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(4), AudioManager.FLAG_SHOW_UI);
+			System.out.println("Hey you choose medium volume audio option.");
+			break;
+	    case 2: 
+	    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_SHOW_UI);
+	    	System.out.println("Hey you choose high volume audio option.");
+	    	break;
 			}
 	}
 	

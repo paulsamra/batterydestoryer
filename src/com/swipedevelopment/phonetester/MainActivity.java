@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
 	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,location_preference,volume_preference,
 	power_preference,brightness_preference;
 	DatabaseManager db_man;
-	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
+//	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 			
 		});
 		loadPref();
-//		loadDB();
+
 	}
 	
 	protected void onPause() {
@@ -215,25 +215,9 @@ public class MainActivity extends Activity {
 		smsNum_preference = mySharedPreferences.getString("ListPreference2", "");
 		ringtone_preference = mySharedPreferences.getString("ringtone", "<unset>");
 		location_preference = mySharedPreferences.getString("EditTextPreference4", "");
-		volume_preference = mySharedPreferences.getString("ListPreference3", "");
-		brightness_preference = mySharedPreferences.getString("ListPreference4", "");
-		power_preference = mySharedPreferences.getString("ListPreference5", "");
+		volume_preference = mySharedPreferences.getString("ListPreference3", "1");
+		brightness_preference = mySharedPreferences.getString("ListPreference4", "1");
+		power_preference = mySharedPreferences.getString("ListPreference5", "1");
 	}
-	private void loadDB(){
-		db_man = new DatabaseManager(this);
-		try{
-			Cursor c = db_man.getTestFunctions();
-			for(int i = 0; c.moveToNext(); i++){
-				row_state.add(new RowInfo());
-				RowInfo ri = row_state.get(i);
-				ri.setApp(c.getInt(1));
-				ri.setDuration(c.getInt(2));
-				ri.setChecked(c.getInt(3) == 1);
-				Log.d("CURSOR MAIN INFO", c.getString(1) + " " + c.getString(2) + " " + c.getString(3));
-			}	
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-	}
+
 }
