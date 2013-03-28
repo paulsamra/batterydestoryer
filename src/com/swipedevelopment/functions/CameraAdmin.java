@@ -46,7 +46,8 @@ public class CameraAdmin extends SurfaceView implements SurfaceHolder.Callback{
     	
     };
 
-    public CameraAdmin(Context context) {
+    @SuppressWarnings("deprecation")
+	public CameraAdmin(Context context) {
 		super(context);
 		// TODO Auto-generated constructor stub
 //		surfaceView = this;
