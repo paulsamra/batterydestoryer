@@ -21,7 +21,7 @@ public class MusicAdmin {
       try {
 		if(!isPlaying){	
 				mediaPlayer.reset();
-				mediaPlayer.setDataSource(path);
+				mediaPlayer.setDataSource("media/internal/audio/media/44");
 				mediaPlayer.prepare();
 				mediaPlayer.start();
 				isPlaying = true;
