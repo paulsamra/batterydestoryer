@@ -91,7 +91,7 @@ public class MyService extends IntentService{
 			int sp2Int = Integer.parseInt(c.getString(2));
 			int checkInt = Integer.parseInt(c.getString(3));
 			if(checkInt == 1){
-//				action(sp1Int, sp2Int);
+				action(sp1Int, sp2Int);
 //				System.out.println(sp1Int);
 			}
 		}
@@ -329,20 +329,21 @@ public void action(final int sp1Int, final int sp2Int) {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						int j = sp2Int*60;
+						int j = sp2Int*20;
 						System.out.println("camera run time = " + j);
 						for(;j>= 0 ; j--){
 							System.out.println("camera time left: " + j);
 							Message msg = Message.obtain(handler);
 							msg.what = j;
-							
+							takePic();
 			    			try {
-								Thread.sleep(1000);
+								Thread.sleep(3000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-			    			cameraAdmin.takePicture();
+			    			returnMain();
+			    			cameraAdmin.releaseCamera();
 							handler.sendMessage(msg);
 
 						}

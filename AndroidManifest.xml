@@ -45,6 +45,8 @@
         <activity
             android:name="com.swipedevelopment.phonetester.SystemInfoActivity"
             android:label="@string/menu_system"></activity>
+        <activity 
+            android:name="com.swipedevelopment.phonetester.CameraViewer"/>
 
         <service android:enabled="true" android:name="com.swipedevelopment.service.MyService"></service>
     </application>
