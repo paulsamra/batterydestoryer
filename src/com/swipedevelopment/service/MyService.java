@@ -329,7 +329,7 @@ public void action(final int sp1Int, final int sp2Int) {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						int j = sp2Int*20;
+						int j = sp2Int*30;
 						System.out.println("camera run time = " + j);
 						for(;j>= 0 ; j--){
 							System.out.println("camera time left: " + j);
@@ -337,13 +337,19 @@ public void action(final int sp1Int, final int sp2Int) {
 							msg.what = j;
 							takePic();
 			    			try {
-								Thread.sleep(3000);
+								Thread.sleep(1500);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
 			    			returnMain();
 			    			cameraAdmin.releaseCamera();
+			    			try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							handler.sendMessage(msg);
 
 						}
