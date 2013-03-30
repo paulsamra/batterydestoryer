@@ -1,12 +1,7 @@
 package com.swipedevelopment.phonetester;
 
-import java.util.ArrayList;
-
-import com.swipedevelopment.email.EmailAdmin;
 import com.swipedevelopment.service.MyService;
 import com.swipedevelopment.sql.DatabaseManager;
-import com.swipedevelopment.sql.RowInfo;
-
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -19,9 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,9 +33,9 @@ public class MainActivity extends Activity {
 	Button run_btn;
 	ProgressBar progressbar;
 	SharedPreferences mySharedPreferences;
-	boolean loop_preference;
-	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,location_preference,volume_preference,
-	power_preference,brightness_preference;
+	boolean loop_preference,switch_preference;
+	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
+	power_preference,brightness_preference,web_preference,email_preference1,email_preference2;
 	DatabaseManager db_man;
 //	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
 	@Override
@@ -195,11 +188,17 @@ public class MainActivity extends Activity {
 		serviceIntent.putExtra("smsDetail", sms_preference);
 		serviceIntent.putExtra("smsNumber", smsNum_preference);
 		serviceIntent.putExtra("ringtone", ringtone_preference);
-		serviceIntent.putExtra("location", location_preference);
+		serviceIntent.putExtra("address1", address_preference1);
+		serviceIntent.putExtra("address2", address_preference2);
+		serviceIntent.putExtra("city", city_preference);
+		serviceIntent.putExtra("state", state_preference);
 		serviceIntent.putExtra("volumeLevel", volume_preference);
 		serviceIntent.putExtra("brightness", brightness_preference);
 		serviceIntent.putExtra("powerMode", power_preference);
-		
+		serviceIntent.putExtra("webBrowser", web_preference);
+		serviceIntent.putExtra("switchWifi", switch_preference);
+		serviceIntent.putExtra("emailAddress", "");
+		serviceIntent.putExtra("emailDetails", "");
 		this.startService(serviceIntent);
 //		System.out.println("run");
 	}
@@ -217,10 +216,29 @@ public class MainActivity extends Activity {
 		sms_preference = mySharedPreferences.getString("EditTextPreference2", "");
 		smsNum_preference = mySharedPreferences.getString("ListPreference2", "");
 		ringtone_preference = mySharedPreferences.getString("ringtone", "<unset>");
-		location_preference = mySharedPreferences.getString("EditTextPreference4", "");
+		//location including 4 parts: address line1&2, city, and state
+		address_preference1 = mySharedPreferences.getString("EditTextPreference4", "");
+		address_preference2 = mySharedPreferences.getString("EditTextPreference5", "");
+		city_preference = mySharedPreferences.getString("EditTextPreference6", "");
+		state_preference = mySharedPreferences.getString("EditTextPreference7", "");
+		//email address and details
+		email_preference1 = mySharedPreferences.getString("EditTextPreference8", "");
+		email_preference2 = mySharedPreferences.getString("EditTextPreference9", "");
 		volume_preference = mySharedPreferences.getString("ListPreference3", "1");
 		brightness_preference = mySharedPreferences.getString("ListPreference4", "1");
 		power_preference = mySharedPreferences.getString("ListPreference5", "1");
+		//web address and wifi use switch
+		web_preference = mySharedPreferences.getString("EditTextPreference3", "www.swipedevelopment.com");
+		switch_preference = mySharedPreferences.getBoolean("switchPreference", false);
 	}
+	//disenable start btn when system running..
+//	private void enableButton(int id, boolean isEnable) {
+//    ((Button) findViewById(id)).setEnabled(isEnable);
+//}
 
+//private void enableButtons(boolean isRecording) {
+//    enableButton(R.id.btnStart, !isRecording);
+//    enableButton(R.id.btnFormat, !isRecording);
+//    enableButton(R.id.btnStop, isRecording);
+//}
 }

@@ -1,4 +1,4 @@
-package com.swipedevelopment.email;
+ package com.swipedevelopment.email;
 
 import javax.activation.DataHandler;   
 import javax.activation.DataSource;   

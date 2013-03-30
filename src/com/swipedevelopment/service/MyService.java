@@ -2,6 +2,8 @@ package com.swipedevelopment.service;
 
 import java.util.ArrayList;
 
+import javax.mail.internet.ContentType;
+
 import com.swipedevelopment.email.EmailAdmin;
 import com.swipedevelopment.functions.AudioAdmin;
 import com.swipedevelopment.functions.BluetoothAdmin;
@@ -9,6 +11,7 @@ import com.swipedevelopment.functions.CameraAdmin;
 import com.swipedevelopment.functions.MusicAdmin;
 import com.swipedevelopment.functions.NFCAdmin;
 import com.swipedevelopment.functions.PowerAdmin;
+import com.swipedevelopment.functions.RecorderAdmin;
 import com.swipedevelopment.functions.SMSAdmin;
 import com.swipedevelopment.functions.TelephonyAdmin;
 import com.swipedevelopment.functions.WifiAdmin;
@@ -34,8 +37,8 @@ import android.widget.Toast;
 
 public class MyService extends IntentService{
 	private static final String TAG = "MyService";
-	String telephoneNum,smsDetail,smsNum,ringtone,location,volume,brightness,powermode;
-	boolean loopStatus;
+	String telephoneNum,smsDetail,smsNum,ringtone,address1,address2,city,state,volume,brightness,powermode,webBrowser,emailAddress,emailDetails;
+	boolean loopStatus,switchWifi;
 	TelephonyAdmin teleAdmin;
 	SMSAdmin smsAdmin;
 	WifiAdmin wifiAdmin;
@@ -46,7 +49,8 @@ public class MyService extends IntentService{
 	NFCAdmin nfcAdmin;
 	AudioAdmin audioAdmin;
 	MusicAdmin musicAdmin;
-	Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12;
+	RecorderAdmin recorderAdmin;
+	Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13;
 	DatabaseManager db_man;
 	int sp1Int,sp2Int,checkInt;
 
@@ -71,13 +75,23 @@ public class MyService extends IntentService{
 		smsDetail = intent.getStringExtra("smsDetail");
 		smsNum = intent.getStringExtra("smsNumber");
 		ringtone = intent.getStringExtra("ringtone");
-		location = intent.getStringExtra("location");
+		
+		address1 = intent.getStringExtra("address1");
+		address2 = intent.getStringExtra("address2");
+		city = intent.getStringExtra("city");
+		state = intent.getStringExtra("state");
+		
 		volume = intent.getStringExtra("volumeLevel");
 		brightness = intent.getStringExtra("brightness");
 		powermode = intent.getStringExtra("powerMode");
+		webBrowser = intent.getStringExtra("webBrowser");
+		switchWifi = intent.getBooleanExtra("switchWifi", false);
 		
+		emailAddress =intent.getStringExtra("emailAddress");
+		emailDetails = intent.getStringExtra("emailDetails");
  		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail + " number " + smsNum +
- 				" ringtone "+ ringtone + " location "+ location + " volume " + volume + " brightness " + brightness +" power "+ powermode);
+ 				" ringtone "+ ringtone + " location "+ address1 + " " + address2 + " " + city + " " + state + " volume " + volume + " brightness " + brightness +" power "+ powermode
+ 				+ "Web " +webBrowser + "wifiSwitch " + switchWifi + "email " + emailAddress + emailDetails);
 		db_man = new DatabaseManager(this);
 		Cursor c = db_man.getTestFunctions();
 		for(int i = 0; c.moveToNext(); i++){
@@ -122,10 +136,11 @@ public class MyService extends IntentService{
 		musicAdmin = new MusicAdmin(this);
 //		emailAdmin = new EmailAdmin(this);
 //		nfcAdmin = new NFCAdmin(this);
-		
+		recorderAdmin = new RecorderAdmin();
 		
 		powerOptions(powermode);
 		audioOptions(volume);
+		brightnessOptions(brightness);
 	}
 
 	@Override
@@ -434,7 +449,7 @@ public void action(final int sp1Int, final int sp2Int) {
 				canSwitch=false;
 				System.out.println("actionController: ringtone is chosen.");
 				if(!musicAdmin.checkPlaying()){
-					musicAdmin.playMusic(ringtone);
+					musicAdmin.playMusic(this, ringtone);
 					
 					t7 = new Thread(new Runnable(){
 						
@@ -472,7 +487,6 @@ public void action(final int sp1Int, final int sp2Int) {
 						}
 		    			if (j==0){
 		    				musicAdmin.stopMusic();
-//		    				powerAdmin.releasePower(sp2Int);
 		    				canSwitch = true;
 		    			}
 				    }
@@ -494,7 +508,7 @@ public void action(final int sp1Int, final int sp2Int) {
 					e.printStackTrace();
 				}
 				turnGPSOnOff();
-				openGPS(location);
+				openGPS(address1,address2,city,state);
 
 				t8 = new Thread(new Runnable(){
 					
@@ -534,16 +548,6 @@ public void action(final int sp1Int, final int sp2Int) {
 					}
 	    			if (j==0){
 	    				//gps close
-//	    				powerAdmin.releasePower(sp2Int);
-//	    				wifiAdmin.closeWifi();
-//	    				if(sp3Int == 4){
-//	    					wifiAdmin.closeWifi();
-//	    					returnMain();
-////	    					turnGPSOnOff();
-//	    				}
-//	    				if(sp3Int == 5){
-////	    					turnGPSOnOff();
-//	    				}
 	    				returnMain();
 	    				turnGPSOnOff();
 	    				canSwitch = true;
@@ -556,92 +560,74 @@ public void action(final int sp1Int, final int sp2Int) {
 				}
 		case 9:
 			//web browser
-//			if(canSwitch){
-//				canSwitch=false;
-//			
-//				System.out.println("actionController: website is chosen");
-//				powerAdmin.powerOption(sp2Int);
-//				wifiAdmin.openWifi();
-////				try {
-////					Thread.sleep(1000);
-////				} catch (InterruptedException e) {
-////					// TODO Auto-generated catch block
-////					e.printStackTrace();
-////				}
-//				
-//
-//				t9 = new Thread(new Runnable(){
-//					
-//					@Override
-//					public void run() {
-//						// TODO Auto-generated method stub
-//						System.out.println("t9 thread is " + Thread.currentThread().getId());
-//						if(sp2Int >= 10){
-//							System.out.println("initial website loop times = " + SP2Int);
-//							for(int i = 0; i<durationInt ; i++){
-//							Message msg = Message.obtain(handler);
-//							msg.what = i;
-//							
-//							if(i%10 == 0){								
-////								switchWeb(count);								
-////								count++;
-//							}
-//
-//							try {
-//							     Thread.sleep(1000);
-//						    }catch (InterruptedException e) {
-//							    // TODO Auto-generated catch block
-//							    e.printStackTrace();
-//						     }
-//							handler.sendMessage(msg);
-//
-//						    }	
-//						}else{
-//							System.out.println("website time is less than 10 secs");
-//							int j = durationInt;
-//							System.out.println("actionController: switch to web01...");
-////							openWebsite(web01);
-//							for(;j>=0;j--){
-//								
-//								Message msg = Message.obtain(handler);
-//								msg.what = j;
-//								try {
-//								     Thread.sleep(1000);
-//							    }catch (InterruptedException e) {
-//								    // TODO Auto-generated catch block
-//								    e.printStackTrace();
-//							     }
-//								handler.sendMessage(msg);
-//							}
-//							
-//							
-//						}
-//					}
-//					
-//				});
-//				t9.start();
-//				int j = durationInt + 2;
-//				for(;j >= 0; j--){
-//	    			System.out.println("Rob's timer website time left: " + j);
-//	    			try {
-//						Thread.sleep(1000);
-//					} catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//	    			if (j==0){
-//	    				
-//	    				wifiAdmin.closeWifi();
-//	    				powerAdmin.releasePower(sp2Int);
-//	    				canSwitch = true;
-//	    				returnMain();
-//	    			}
-//			    }
-//				break;
-//			
-//		  }else{
-//				break;
-//			}
+			if(canSwitch){
+				canSwitch=false;
+//				try {
+//					Thread.sleep(1000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}			
+				System.out.println("actionController: website is chosen");
+				if(switchWifi){
+					wifiAdmin.openWifi();	
+					openWebBrowser(webBrowser);
+				}else{
+					openWebBrowser(webBrowser);
+				}
+				t9 = new Thread(new Runnable(){
+					
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						int j = sp2Int*60;
+						System.out.println("t9 thread is " + Thread.currentThread().getId());
+						
+							System.out.println("initial website loop times = " + j);
+							for(; j>=0; j--){
+							Message msg = Message.obtain(handler);
+							msg.what = j;
+
+							try {
+							     Thread.sleep(1000);
+						    }catch (InterruptedException e) {
+							    // TODO Auto-generated catch block
+							    e.printStackTrace();
+						     }
+							handler.sendMessage(msg);
+
+						    }	
+						
+					}
+					
+				});
+				t9.start();
+				int j = sp2Int*60;
+				for(;j >= 0; j--){
+	    			System.out.println("website time left: " + j);
+	    			try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	    			if (j==0){
+	    				if(switchWifi){
+	    					wifiAdmin.closeWifi();	
+	    					canSwitch = true;
+	    					returnMain();
+	    				}else{
+	    					canSwitch = true;
+	    					returnMain();
+	    				}
+	    					
+	    			}
+			    }
+				break;
+			
+		  }else{
+				break;
+			}
 		case 10:
 			//email
 			if(canSwitch){
@@ -666,10 +652,69 @@ public void action(final int sp1Int, final int sp2Int) {
 			}else{
 				break;
 			}
+		case 13: 
+			//voice recorder
+			if(canSwitch){
+				canSwitch=false;
+				System.out.println("actionController:Voice recorder is chosen.");
+				recorderAdmin.startRecording();	
+					
+					t13 = new Thread(new Runnable(){
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							int j = sp2Int*60;
+							System.out.println("initial music run time = " + j);
+							for(;j>= 0 ; j--){
+								System.out.println("recorder time left: " + j);
+								Message msg = Message.obtain(handler);
+								msg.what = j;
+								try {
+								     Thread.sleep(1000);
+							    }catch (InterruptedException e) {
+								    // TODO Auto-generated catch block
+								    e.printStackTrace();
+							     }
+								handler.sendMessage(msg);
+
+							}
+						}
+						
+					});
+					t13.start();
+					int j = sp2Int*60;
+					for(;j >= 0; j--){
+		    			System.out.println("recorder time left: " + j);
+		    			try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		    			if (j==0){
+		    				recorderAdmin.stopRecording();
+		    				canSwitch = true;
+		    			}
+				    }
+				
+				break;
+			}else{
+				break;
+			}
 		}
 		
 	}
 
+	private void openWebBrowser(String address){
+		String url = "http://"+ address;
+		Intent intent = new Intent();
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.setAction("android.intent.action.VIEW");
+		Uri uri = Uri.parse(url);
+		intent.setData(uri);
+		startActivity(intent);
+	}
 	private void returnMain(){
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -680,8 +725,8 @@ public void action(final int sp1Int, final int sp2Int) {
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
 	}
-	private void openGPS(String location){
-		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=San+Diego+CA"));
+	private void openGPS(String obj1, String obj2,String obj3,String obj4){
+		Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + obj1 + "+" + obj2 + "+" + obj3+ "+" + obj4 ));
 		i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
 	}
@@ -690,11 +735,7 @@ public void action(final int sp1Int, final int sp2Int) {
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
 	}
-//	private void snapshot(){
-//		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //调用照相机
-//		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//		startActivity(intent);
-//	}
+
 	//run power audio and brightness mode
 	private void powerOptions(String powermode){
 		powerAdmin = new PowerAdmin(this);
@@ -738,6 +779,14 @@ public void action(final int sp1Int, final int sp2Int) {
 	    System.out.println("timeservice: GPS on or off");
 
  }
+//	private void voiceRecording(){
+//		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//		intent.setType(ContentType.AUDIO_AMR); //String AUDIO_AMR = "audio/amr";
+//		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//		intent.setClassName("com.android.soundrecorder",
+//		"com.android.soundrecorder.SoundRecorder");
+//		startActivityForResult(intent, requestCode);
+//	}
 	private void brightnessOptions(String brightness){
 		
 	}

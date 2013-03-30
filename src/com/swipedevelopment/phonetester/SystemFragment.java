@@ -9,7 +9,7 @@ public class SystemFragment extends PreferenceFragment{
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		addPreferencesFromResource(R.xml.system);
+//		addPreferencesFromResource(R.xml.system);
 	}
 
 }

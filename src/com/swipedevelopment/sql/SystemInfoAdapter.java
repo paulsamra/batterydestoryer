@@ -21,7 +21,7 @@ public class SystemInfoAdapter extends BaseAdapter
 	private ArrayList<RowInfo> row_state;
 	private Context context;
 	private final String[] action = {"None","Call","SMS","Wifi","Bluetooth","Camera"
-            ,"Video Recorder","Ringtone","GPS","Web Browser","Email","NFC","3D"};
+            ,"Video Recorder","Ringtone","GPS","Web Browser","Email","NFC","3D","Voice Recorder"};
 	private final String[] duration = 
 		   {"0 Min","1 Min","2 Min","3 Min","4 Min","5 Min","6 Min","7 Min","8 Min","9 Min","10 Min", 
 			"11 Min","12 Min","13 Min","14 Min","15 Min","16 Min","17 Min","18 Min","19 Min","20 Min",

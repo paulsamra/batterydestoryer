@@ -5,6 +5,8 @@ import java.io.FilenameFilter;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
 
 public class MusicAdmin {
 	MediaPlayer mediaPlayer;;
@@ -17,16 +19,17 @@ public class MusicAdmin {
         isPlaying = mediaPlayer.isPlaying();
 		return isPlaying;
 	}
-	public void playMusic(String path){
+	public void playMusic(Context context,String path){
       try {
 		if(!isPlaying){	
+			    Uri uri = Uri.parse(path);
 				mediaPlayer.reset();
-				mediaPlayer.setDataSource("media/internal/audio/media/44");
+				mediaPlayer.setDataSource(context,uri);
 				mediaPlayer.prepare();
 				mediaPlayer.start();
 				isPlaying = true;
 				mediaPlayer.setLooping(true);
-				System.out.println("music is playing " + mediaPlayer.isPlaying());
+				System.out.println("music is playing " + "Uri: " + uri);
 			} 
 		else {
 			System.out.println("music is already playing");
