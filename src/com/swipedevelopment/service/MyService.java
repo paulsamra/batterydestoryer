@@ -633,13 +633,7 @@ public void action(final int sp1Int, final int sp2Int) {
 				break;
 			}
 		case 10:
-			Message message = new Message();
-			Bundle b = new Bundle();
-			String s = "email is sending...";
-			b.putString("toast", s);
-			message.setData(b);
-			handler.sendMessage(message);
-			
+			createMessage("Email is starting...");
 			{ 
 				new Thread(new Runnable() {
 					@Override
@@ -743,6 +737,14 @@ public void action(final int sp1Int, final int sp2Int) {
 			}
 		}
 		
+	}
+
+	private void createMessage(String messageToDisplay) {
+		Message message = new Message();
+		Bundle b = new Bundle();
+		b.putString("toast", messageToDisplay);
+		message.setData(b);
+		handler.sendMessage(message);
 	}
 
 	private void openWebBrowser(String address){
