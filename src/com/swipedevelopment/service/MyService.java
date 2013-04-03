@@ -667,7 +667,8 @@ public void action(final int sp1Int, final int sp2Int) {
 					}
 				}
 				timer = false;
-			}	
+			}
+			createMessage("Email has ended...");
 			break;
 		case 11:
 			//NFC
