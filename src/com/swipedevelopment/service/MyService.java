@@ -2,8 +2,6 @@ package com.swipedevelopment.service;
 
 import java.util.ArrayList;
 
-import javax.mail.internet.ContentType;
-
 import com.swipedevelopment.email.EmailAdmin;
 import com.swipedevelopment.functions.AudioAdmin;
 import com.swipedevelopment.functions.BluetoothAdmin;
@@ -23,12 +21,13 @@ import com.swipedevelopment.sql.RowInfo;
 import android.app.IntentService;
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.provider.MediaStore;
@@ -38,7 +37,7 @@ import android.widget.Toast;
 public class MyService extends IntentService{
 	private static final String TAG = "MyService";
 	String telephoneNum,smsDetail,smsNum,ringtone,address1,address2,city,state,volume,brightness,powermode,webBrowser,emailAddress,emailDetails;
-	boolean loopStatus,switchWifi;
+	boolean loopStatus,switchWifi,timer = true;
 	TelephonyAdmin teleAdmin;
 	SMSAdmin smsAdmin;
 	WifiAdmin wifiAdmin;
@@ -53,6 +52,7 @@ public class MyService extends IntentService{
 	Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13;
 	DatabaseManager db_man;
 	int sp1Int,sp2Int,checkInt;
+	static Context context;
 
 	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
 	@Override
@@ -89,9 +89,10 @@ public class MyService extends IntentService{
 		
 		emailAddress =intent.getStringExtra("emailAddress");
 		emailDetails = intent.getStringExtra("emailDetails");
+		context = getApplicationContext();
  		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail + " number " + smsNum +
  				" ringtone "+ ringtone + " location "+ address1 + " " + address2 + " " + city + " " + state + " volume " + volume + " brightness " + brightness +" power "+ powermode
- 				+ "Web " +webBrowser + "wifiSwitch " + switchWifi + "email " + emailAddress + emailDetails);
+ 				+ "Web " +webBrowser + "wifiSwitch " + switchWifi + " email " + emailAddress + emailDetails);
 		db_man = new DatabaseManager(this);
 		Cursor c = db_man.getTestFunctions();
 		for(int i = 0; c.moveToNext(); i++){
@@ -111,14 +112,17 @@ public class MyService extends IntentService{
 		}
 	}
 
-	Handler handler = new Handler(){
+	static Handler handler = new Handler(){
 
 		@Override
 		public void handleMessage(Message msg) {
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			
-//			Toast.makeText(getApplicationContext(), "handler..", Toast.LENGTH_SHORT).show();
+			Log.d("HANDLER", msg.getData().getString("toast"));
+			
+			Toast.makeText(context,msg.getData().getString("toast"), 
+							Toast.LENGTH_LONG).show();
 		}
 		
 	};
@@ -629,13 +633,48 @@ public void action(final int sp1Int, final int sp2Int) {
 				break;
 			}
 		case 10:
-			//email
-			if(canSwitch){
-				Toast.makeText(getApplicationContext(), "email is sending...", Toast.LENGTH_SHORT).show();
-				break;
-			}else{
-				break;
-			}
+			Message message = new Message();
+			Bundle b = new Bundle();
+			String s = "email is sending...";
+			b.putString("toast", s);
+			message.setData(b);
+			handler.sendMessage(message);
+			
+			{ 
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						EmailAdmin emailAdmin = new EmailAdmin(
+								"mudvainian@gmail.com", "My090591");
+						int numEmailSent = 0;
+						while(timer) {
+							try {
+								
+								emailAdmin.sendMail("Battery Destroyer", "Test","r4castil@gmail.com");
+								numEmailSent++;
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						System.out.println("Num emails sent: " + numEmailSent);
+						timer = true;
+					}
+				}).start();
+				
+				int j = sp2Int*60;
+				for(;j >= 0; j--){
+					System.out.println("email time left: " + j + " " + timer);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				timer = false;
+			}	
+			break;
 		case 11:
 			//NFC
 			if(canSwitch){

@@ -8,6 +8,9 @@ import javax.mail.Session;
 import javax.mail.Transport;   
 import javax.mail.internet.InternetAddress;   
 import javax.mail.internet.MimeMessage;   
+
+import android.util.Log;
+
 import java.io.ByteArrayInputStream;   
 import java.io.IOException;   
 import java.io.InputStream;   
@@ -47,20 +50,17 @@ public class EmailAdmin extends javax.mail.Authenticator {
         return new PasswordAuthentication(user, password);   
     }   
 
-    public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {   
+    public synchronized void sendMail(String subject, String body, String recipients) throws Exception {   
         try{
         MimeMessage message = new MimeMessage(session);   
         DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));   
-        message.setSender(new InternetAddress(sender));   
-        message.setSubject(subject);   
-        message.setDataHandler(handler);   
-        if (recipients.indexOf(',') > 0)   
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));   
-        else  
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));   
+        message.setSender(new InternetAddress(user));
+        message.setSubject(subject);
+        message.setDataHandler(handler); 
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));
         Transport.send(message);   
         }catch(Exception e){
-
+        	Log.d("Email Error", "error: " + e);
         }
     }   
 
