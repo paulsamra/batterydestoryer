@@ -14,6 +14,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,16 +23,17 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 	TextView telephoneID,voltage,current,temperature,batteryStatus,batteryLevel,signalStrength_view,progressbar_text;
 	TelephonyManager telephonyManager;
 	SignalStrengthListener signalListener;
-	int dbm_result,asu_result, battery_voltage,level,scale;
+	int dbm_result,asu_result, battery_voltage,level,scale,current_progress;
 	double temper;
 	String battery_status;
 	Button run_btn;
-	ProgressBar progressbar;
+	public static ProgressBar progressbar;
 	SharedPreferences mySharedPreferences;
 	boolean loop_preference,switch_preference;
 	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
@@ -42,7 +44,7 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
+		
 		telephoneID = (TextView)findViewById(R.id.textView2);
 		voltage = (TextView)findViewById(R.id.textView4);
 		current = (TextView)findViewById(R.id.textView6);
@@ -65,6 +67,17 @@ public class MainActivity extends Activity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				progressbar.setVisibility(ProgressBar.VISIBLE);
+				DatabaseManager db_man = new DatabaseManager(MainActivity.this);
+				Cursor c = db_man.getTestFunctions();
+				int totalprogress = 0;
+				while(c.moveToNext()) {
+					totalprogress+=c.getInt(2);
+				}
+				totalprogress*=60;
+				progressbar.setMax(totalprogress);
+				progressbar.setProgress(0);
+				c.close();
+				db_man.close();
 				run();
 			}
 			
@@ -200,7 +213,6 @@ public class MainActivity extends Activity {
 		serviceIntent.putExtra("emailAddress", "");
 		serviceIntent.putExtra("emailDetails", "");
 		this.startService(serviceIntent);
-//		System.out.println("run");
 	}
 	
 	@Override
@@ -235,10 +247,10 @@ public class MainActivity extends Activity {
 //	private void enableButton(int id, boolean isEnable) {
 //    ((Button) findViewById(id)).setEnabled(isEnable);
 //}
-
-//private void enableButtons(boolean isRecording) {
-//    enableButton(R.id.btnStart, !isRecording);
-//    enableButton(R.id.btnFormat, !isRecording);
-//    enableButton(R.id.btnStop, isRecording);
+	
+	//private void enableButtons(boolean isRecording) {
+//  enableButton(R.id.btnStart, !isRecording);
+//  enableButton(R.id.btnFormat, !isRecording);
+//  enableButton(R.id.btnStop, isRecording);
 //}
 }
