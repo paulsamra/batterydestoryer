@@ -427,7 +427,6 @@ public void action(final int sp1Int, final int sp2Int) {
 			case 6:
 				//camera recorder
 				if(canSwitch){
-<<<<<<< HEAD
 					canSwitch=false;
 					try {
 						Thread.sleep(1500);
@@ -435,11 +434,8 @@ public void action(final int sp1Int, final int sp2Int) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-=======
 					createMessage("Video Recoding is starting...");
 
-					canSwitch=false;	
->>>>>>> 723e0f7ddf86960760cecbd925787d09306fc8fd
 					t6 = new Thread(new Runnable(){
 
 						@Override
@@ -735,14 +731,9 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 11:
 			//NFC
 			if(canSwitch){
-<<<<<<< HEAD
-				
-=======
 				createMessage("NFC is starting...");
 
-				Toast.makeText(getApplicationContext(), "NFC is on...", Toast.LENGTH_SHORT).show();
 				createMessage("NFC has ended...");
->>>>>>> 723e0f7ddf86960760cecbd925787d09306fc8fd
 				break;
 			}else{
 				createMessage("NFC has ended...");
@@ -751,14 +742,9 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 12:
 			//3D
 			if(canSwitch){
-<<<<<<< HEAD
-			
-=======
 				createMessage("3D Graphics is starting...");
 
-				Toast.makeText(getApplicationContext(), "3D graphic is playing...", Toast.LENGTH_SHORT).show();
 				createMessage("3D Graphics has ended...");
->>>>>>> 723e0f7ddf86960760cecbd925787d09306fc8fd
 				break;
 			}else{
 				createMessage("3D Graphics has ended...");

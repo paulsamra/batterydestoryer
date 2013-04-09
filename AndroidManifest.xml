@@ -25,13 +25,8 @@
                     android:resource="@xml/appwidget_info"/>          
         </receiver> 
         <activity
-<<<<<<< HEAD
             android:name="com.swipedevelopment.phonetester.Splash"
-            android:screenOrientation="portrait"
-            >
-=======
-            android:name="com.swipedevelopment.phonetester.Splash">
->>>>>>> 723e0f7ddf86960760cecbd925787d09306fc8fd
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
