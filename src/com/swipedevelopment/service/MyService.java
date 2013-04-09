@@ -119,10 +119,10 @@ public class MyService extends IntentService{
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			
-			Log.d("HANDLER", msg.getData().getString("toast"));
+//			Log.d("HANDLER", msg.getData().getString("toast"));
 			
-			Toast.makeText(context,msg.getData().getString("toast"), 
-							Toast.LENGTH_LONG).show();
+//			Toast.makeText(context,msg.getData().getString("toast"), 
+//							Toast.LENGTH_LONG).show();
 		}
 		
 	};
@@ -312,6 +312,7 @@ public void action(final int sp1Int, final int sp2Int) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
+			    			
 //							}
 							handler.sendMessage(msg);
 
@@ -348,10 +349,10 @@ public void action(final int sp1Int, final int sp2Int) {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						int j = sp2Int*30;
+						int j = sp2Int*30 - 1;
 						System.out.println("camera run time = " + j);
 						for(;j>= 0 ; j--){
-							System.out.println("camera time left: " + j);
+							System.out.println("camera time1 left: " + j);
 							Message msg = Message.obtain(handler);
 							msg.what = j;
 							takePic();
@@ -378,7 +379,7 @@ public void action(final int sp1Int, final int sp2Int) {
 				t5.start();
 				int j = sp2Int*60;
 				for(;j >= 0; j--){
-	    			System.out.println("camera time left: " + j);
+	    			System.out.println("camera time2 left: " + j);
 	    			try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -388,6 +389,7 @@ public void action(final int sp1Int, final int sp2Int) {
 	    			if (j==0){
 	    				returnMain();
 	    				canSwitch = true;
+	    				System.out.println("camera closed");
 	    			}
 			    }
 				break;
@@ -398,7 +400,13 @@ public void action(final int sp1Int, final int sp2Int) {
 			case 6:
 				//camera recorder
 				if(canSwitch){
-					canSwitch=false;	
+					canSwitch=false;
+					try {
+						Thread.sleep(1500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					t6 = new Thread(new Runnable(){
 
 						@Override
@@ -419,7 +427,7 @@ public void action(final int sp1Int, final int sp2Int) {
 								e.printStackTrace();
 							}
 							handler.sendMessage(msg);
-							if(c == sp2Int*60-1){
+							if(c == sp2Int*60-2){
 								videoRecording();
 							}else if(c == 0){
 								returnMain();
@@ -633,8 +641,10 @@ public void action(final int sp1Int, final int sp2Int) {
 				break;
 			}
 		case 10:
-			createMessage("Email is starting...");
-			{ 
+			//email
+			if(canSwitch){
+				canSwitch = false;
+				createMessage("Email is starting...");
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -667,13 +677,16 @@ public void action(final int sp1Int, final int sp2Int) {
 					}
 				}
 				timer = false;
+			
+				createMessage("Email has ended...");
+				break;
+			}else{
+				break;
 			}
-			createMessage("Email has ended...");
-			break;
 		case 11:
 			//NFC
 			if(canSwitch){
-				Toast.makeText(getApplicationContext(), "NFC is on...", Toast.LENGTH_SHORT).show();
+				
 				break;
 			}else{
 				break;
@@ -681,7 +694,7 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 12:
 			//3D
 			if(canSwitch){
-				Toast.makeText(getApplicationContext(), "3D graphic is playing...", Toast.LENGTH_SHORT).show();
+			
 				break;
 			}else{
 				break;
