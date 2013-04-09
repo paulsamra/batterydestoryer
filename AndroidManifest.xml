@@ -25,8 +25,7 @@
                     android:resource="@xml/appwidget_info"/>          
         </receiver> 
         <activity
-            android:name="com.swipedevelopment.phonetester.Splash"
-            >
+            android:name="com.swipedevelopment.phonetester.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

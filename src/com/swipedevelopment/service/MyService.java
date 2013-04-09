@@ -110,6 +110,9 @@ public class MyService extends IntentService{
 //				System.out.println(sp1Int);
 			}
 		}
+		c.close();
+		db_man.close();
+		updateProgressBar(true);
 	}
 
 	static Handler handler = new Handler(){
@@ -131,6 +134,7 @@ public class MyService extends IntentService{
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
+		//registerObserver((Observer) getApplicationContext());
 		Toast.makeText(getApplicationContext(), "start...", Toast.LENGTH_SHORT).show();
 		teleAdmin = new TelephonyAdmin(this);
 		smsAdmin = new SMSAdmin(this);
@@ -165,6 +169,8 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 1:
 			//Call
 			if(canSwitch){
+				createMessage("Phone Call is starting...");
+
 				canSwitch = false;
 				try {
 					teleAdmin.callPhone(telephoneNum);
@@ -211,13 +217,17 @@ public void action(final int sp1Int, final int sp2Int) {
     				canSwitch = true;
     			}
 		    }
+			createMessage("Phone Call has ended...");
 			break;
 			}else{
+				createMessage("Phone Call has ended...");
 				break;
 			}
 		case 2:
 			//SMS
 			if(canSwitch){
+				createMessage("SMS is staring...");
+
 				canSwitch = false;
 				System.out.println("actionController: SMS is chosen.");
 				int s = 1;
@@ -236,15 +246,18 @@ public void action(final int sp1Int, final int sp2Int) {
 				}	
 					s++;
 				}
-
+				createMessage("SMS has ended...");
 				break;
 			}else{
+				createMessage("SMS has ended...");
 				break;
 			}
 
 		case 3:
 			//wifi
 			if(canSwitch){
+				createMessage("Wifi is staring...");
+
 				canSwitch=false;			
 				System.out.println("actionController: wifi is chosen.");
 				wifiAdmin.openWifi();
@@ -285,13 +298,19 @@ public void action(final int sp1Int, final int sp2Int) {
 	    				canSwitch = true;
 	    			}
 			    }
+				createMessage("Wifi has ended...");
+
 				break;
 			}else{
+				createMessage("Wifi has ended...");
+
 				break;
 			}
 			case 4:
 			//bluetooth
 			if(canSwitch){
+				createMessage("Bluetooth is starting...");
+
 				canSwitch=false;
 				System.out.println("actionController: bluetooth is chosen");
 				bluetoothAdmin.openBluetooth();
@@ -335,13 +354,17 @@ public void action(final int sp1Int, final int sp2Int) {
 	    				canSwitch = true;
 	    			}
 			    }
+				createMessage("Bluetooth has ended...");
 				break;
 			}else{
+				createMessage("Bluetooth has ended...");
 				break;
 			}
 		case 5:
 			//camera snapshot
 			if(canSwitch){
+				createMessage("Camera is starting...");
+
 				canSwitch=false;
 				t5 = new Thread(new Runnable(){
 					
@@ -390,14 +413,20 @@ public void action(final int sp1Int, final int sp2Int) {
 	    				canSwitch = true;
 	    			}
 			    }
+				createMessage("Camera has ended...");
+
 				break;
 			}else{
+				createMessage("Camera has ended...");
+
 				break;
 			}
 
 			case 6:
 				//camera recorder
 				if(canSwitch){
+					createMessage("Video Recoding is starting...");
+
 					canSwitch=false;	
 					t6 = new Thread(new Runnable(){
 
@@ -443,13 +472,17 @@ public void action(final int sp1Int, final int sp2Int) {
 					canSwitch = true;	
 					}
 				}
+					createMessage("Video Recoding has ended...");
 					break;
 				}else{
+					createMessage("Video Recoding has ended...");
 					break;
 				}
 		case 7:
 			//ringtone
 			if(canSwitch){
+				createMessage("Music is starting...");
+
 				canSwitch=false;
 				System.out.println("actionController: ringtone is chosen.");
 				if(!musicAdmin.checkPlaying()){
@@ -495,13 +528,17 @@ public void action(final int sp1Int, final int sp2Int) {
 		    			}
 				    }
 				}
-			break;
+				createMessage("Music has ended...");
+				break;
 			}else {
+				createMessage("Music has ended...");
 				break;
 			}
 			case 8:
 			//GPS
 				if(canSwitch){
+					createMessage("GPS is starting...");
+
 					canSwitch=false;
 			
 				System.out.println("actionController: GPS is chosen");
@@ -557,14 +594,18 @@ public void action(final int sp1Int, final int sp2Int) {
 	    				canSwitch = true;
 	    			}
 			    }
-				break;
+					createMessage("GPS has ended...");
+					break;
 				}
 				else{
+					createMessage("GPS has ended...");
 					break;
 				}
 		case 9:
 			//web browser
 			if(canSwitch){
+				createMessage("Web Browser is starting...");
+
 				canSwitch=false;
 //				try {
 //					Thread.sleep(1000);
@@ -627,9 +668,13 @@ public void action(final int sp1Int, final int sp2Int) {
 	    					
 	    			}
 			    }
+				createMessage("Web Browser has ended...");
+
 				break;
 			
 		  }else{
+				createMessage("Web Browser has ended...");
+
 				break;
 			}
 		case 10:
@@ -644,7 +689,6 @@ public void action(final int sp1Int, final int sp2Int) {
 						int numEmailSent = 0;
 						while(timer) {
 							try {
-								
 								emailAdmin.sendMail("Battery Destroyer", "Test","r4castil@gmail.com");
 								numEmailSent++;
 							} catch (Exception e) {
@@ -665,6 +709,7 @@ public void action(final int sp1Int, final int sp2Int) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					updateProgressBar(false);
 				}
 				timer = false;
 			}
@@ -673,22 +718,32 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 11:
 			//NFC
 			if(canSwitch){
+				createMessage("NFC is starting...");
+
 				Toast.makeText(getApplicationContext(), "NFC is on...", Toast.LENGTH_SHORT).show();
+				createMessage("NFC has ended...");
 				break;
 			}else{
+				createMessage("NFC has ended...");
 				break;
 			}
 		case 12:
 			//3D
 			if(canSwitch){
+				createMessage("3D Graphics is starting...");
+
 				Toast.makeText(getApplicationContext(), "3D graphic is playing...", Toast.LENGTH_SHORT).show();
+				createMessage("3D Graphics has ended...");
 				break;
 			}else{
+				createMessage("3D Graphics has ended...");
 				break;
 			}
 		case 13: 
 			//voice recorder
 			if(canSwitch){
+				createMessage("Voice Recorder is starting...");
+				
 				canSwitch=false;
 				System.out.println("actionController:Voice recorder is chosen.");
 				recorderAdmin.startRecording();	
@@ -731,13 +786,13 @@ public void action(final int sp1Int, final int sp2Int) {
 		    				canSwitch = true;
 		    			}
 				    }
-				
-				break;
+					createMessage("Voice Recorder has ended...");
+					break;
 			}else{
+				createMessage("Voice Recorder has ended...");
 				break;
 			}
 		}
-		
 	}
 
 	private void createMessage(String messageToDisplay) {
@@ -803,10 +858,9 @@ public void action(final int sp1Int, final int sp2Int) {
 			audioAdmin.volumeOptionForMusic(vol);
 		}catch(Exception e){
 			e.printStackTrace();
-		}
-		
-		
+		}	
 	}
+	
 	public void turnGPSOnOff(){
 	    Intent poke = new Intent();
 	    poke.setClassName("com.android.settings", "com.android.settings.widget.SettingsAppWidgetProvider");
@@ -831,5 +885,21 @@ public void action(final int sp1Int, final int sp2Int) {
 //	}
 	private void brightnessOptions(String brightness){
 		
+	}
+	
+/********** For updating Progress Bar******************/	
+	void updateProgressBar(final boolean end) {
+		MainActivity.progressbar.post(new Runnable() {
+			@Override
+			public void run() {
+				int curr_prog = MainActivity.progressbar.getProgress();
+				MainActivity.progressbar.setProgress(++curr_prog);
+				System.out.println("hey man");
+				if(end) {
+					MainActivity.progressbar.setProgress(0);
+					createMessage("End of Testing...");
+				}
+			}
+		});
 	}
 }
