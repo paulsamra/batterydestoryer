@@ -52,7 +52,6 @@ public class MyService extends IntentService{
 	Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13;
 	DatabaseManager db_man;
 	int sp1Int,sp2Int,checkInt;
-	static Context context;
 
 	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
 	@Override
@@ -89,7 +88,6 @@ public class MyService extends IntentService{
 		
 		emailAddress =intent.getStringExtra("emailAddress");
 		emailDetails = intent.getStringExtra("emailDetails");
-		context = getApplicationContext();
  		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail + " number " + smsNum +
  				" ringtone "+ ringtone + " location "+ address1 + " " + address2 + " " + city + " " + state + " volume " + volume + " brightness " + brightness +" power "+ powermode
  				+ "Web " +webBrowser + "wifiSwitch " + switchWifi + " email " + emailAddress + emailDetails);
@@ -122,10 +120,10 @@ public class MyService extends IntentService{
 			// TODO Auto-generated method stub
 			super.handleMessage(msg);
 			
-//			Log.d("HANDLER", msg.getData().getString("toast"));
+			Log.d("HANDLER", msg.getData().getString("toast"));
 			
-//			Toast.makeText(context,msg.getData().getString("toast"), 
-//							Toast.LENGTH_LONG).show();
+			Toast.makeText(MainActivity.context,msg.getData().getString("toast"), 
+						Toast.LENGTH_LONG).show();
 		}
 		
 	};

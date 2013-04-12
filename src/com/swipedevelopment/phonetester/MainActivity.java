@@ -39,12 +39,13 @@ public class MainActivity extends Activity{
 	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
 	power_preference,brightness_preference,web_preference,email_preference1,email_preference2;
 	DatabaseManager db_man;
+	public static Context context;
 //	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+		context = this;
 		telephoneID = (TextView)findViewById(R.id.textView2);
 		voltage = (TextView)findViewById(R.id.textView4);
 		current = (TextView)findViewById(R.id.textView6);
@@ -71,7 +72,8 @@ public class MainActivity extends Activity{
 				Cursor c = db_man.getTestFunctions();
 				int totalprogress = 0;
 				while(c.moveToNext()) {
-					totalprogress+=c.getInt(2);
+					if(c.getInt(3) == 1)
+					  totalprogress+=c.getInt(2);
 				}
 				totalprogress*=60;
 				progressbar.setMax(totalprogress);
