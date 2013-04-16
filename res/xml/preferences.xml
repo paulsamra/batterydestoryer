@@ -10,6 +10,7 @@
             android:summaryOn="Auto:On"
             android:summaryOff="Auto:Off"
             android:defaultValue="false"
+            android:disableDependentsState="false"
             />
     </PreferenceCategory>
     <PreferenceCategory 
@@ -49,10 +50,31 @@
             android:dialogTitle="Web address Settings"
             />
         <SwitchPreference
-            android:key="switchPreference"
+            android:key="SwitchPreference2"
             android:title="Wifi Switch"
             android:summaryOn="Use wifi:On"
             android:summaryOff="use wifi:Off"
+            android:defaultValue="false"
+            android:disableDependentsState="false"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory 
+        android:title="Youtube Video Settings">
+        <ListPreference
+            android:key="ListPreference6"
+            android:title="Hot Movie trailers list"
+            android:summary="Please choose a movie trailer to watch"
+            android:dialogTitle="Video List"
+            android:entries="@array/video_array_list"
+            android:entryValues="@array/video_array_id"
+            android:defaultValue="@string/video_default_id"
+            />   
+        <SwitchPreference
+            android:key="SwitchPreference3"
+            android:title="Video Wifi Switch"
+            android:summaryOn="Use wifi:On"
+            android:summaryOff="use wifi:Off"
+            android:defaultValue="false"
             android:disableDependentsState="false"
             />
     </PreferenceCategory>
@@ -103,15 +125,9 @@
             android:summary="Please type the address you want to send"
             android:dialogTitle="Email Address Settings"
             />
-        <EditTextPreference
-            android:key="EditTextPreference9"
-            android:title="Email Details"
-            android:summary="Please type details you want to send"
-            android:dialogTitle="Email Details Settings"
-            />
-
         
     </PreferenceCategory>
+
     <PreferenceCategory 
         android:title="3D Settings">
         

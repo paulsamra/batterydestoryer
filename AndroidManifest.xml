@@ -53,7 +53,15 @@
             android:name="com.swipedevelopment.phonetester.CameraViewer"
             android:theme="@android:style/Theme.NoTitleBar"
             android:screenOrientation="portrait"/>
-        
+        <activity 
+            android:name="com.swipedevelopment.phonetester.YoutubeActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:screenOrientation="landscape"
+            />
+        <activity 
+            android:name="com.swipedevelopment.phonetester.WebViewActivity"
+            android:theme="@android:style/Theme.NoTitleBar"
+            android:hardwareAccelerated="true"/>
 
         <service android:enabled="true" android:name="com.swipedevelopment.service.MyService"></service>
     </application>

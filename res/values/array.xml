@@ -77,9 +77,28 @@
     
 </string-array>
 <string-array name="power_array_value">
-    <item>0</item>
+    <item >0</item>
     <item >1</item>
     <item >2</item>
-  
+</string-array>
+<string-array name="video_array_list">
+    <item >Fast and Furious 6 Offical Trailer</item>
+    <item >Iron Man Offical Trailer</item>
+    <item >World War Z Offical Trailer</item>
+    <item >Carrie Official Trailer</item>
+    <item >Jurassic Park IV Offical Trailer</item>
+    <item >After Earth Official Trailer</item>
+    <item >Oblivion Official Trailer</item>
+    <item >Chinese Zodiac Official Trailer</item>
+</string-array>
+<string-array name="video_array_id">
+    <item >dKi5XoeTN0k</item>
+    <item >aV8H7kszXqo</item>
+    <item >4EC7P5WdUko</item>
+    <item >qSn7JyijA8k</item>
+    <item >XQCXVgX-GHo</item>
+    <item >CZIt20emgLY</item>
+    <item >XmIIgE7eSak</item>
+    <item >OPQogQKVeTk</item>
 </string-array>
 </resources>

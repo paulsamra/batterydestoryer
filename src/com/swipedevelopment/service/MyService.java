@@ -15,6 +15,8 @@ import com.swipedevelopment.functions.TelephonyAdmin;
 import com.swipedevelopment.functions.WifiAdmin;
 import com.swipedevelopment.phonetester.CameraViewer;
 import com.swipedevelopment.phonetester.MainActivity;
+import com.swipedevelopment.phonetester.WebViewActivity;
+import com.swipedevelopment.phonetester.YoutubeActivity;
 import com.swipedevelopment.sql.DatabaseManager;
 import com.swipedevelopment.sql.RowInfo;
 
@@ -36,8 +38,10 @@ import android.widget.Toast;
 
 public class MyService extends IntentService{
 	private static final String TAG = "MyService";
-	String telephoneNum,smsDetail,smsNum,ringtone,address1,address2,city,state,volume,brightness,powermode,webBrowser,emailAddress,emailDetails;
-	boolean loopStatus,switchWifi,timer = true;
+	public static String SUBJECT ="Swipe Development Bettery Testing";
+	public static String CONTENT = "Testing";
+	String telephoneNum,smsDetail,smsNum,ringtone,address1,address2,city,state,volume,brightness,powermode,webBrowser,emailAddress,videoId;
+	boolean loopStatus,switchWifi,switchVideoWifi,timer = true;
 	TelephonyAdmin teleAdmin;
 	SMSAdmin smsAdmin;
 	WifiAdmin wifiAdmin;
@@ -49,7 +53,7 @@ public class MyService extends IntentService{
 	AudioAdmin audioAdmin;
 	MusicAdmin musicAdmin;
 	RecorderAdmin recorderAdmin;
-	Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13;
+	Thread t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13,t14;
 	DatabaseManager db_man;
 	int sp1Int,sp2Int,checkInt;
 
@@ -85,12 +89,12 @@ public class MyService extends IntentService{
 		powermode = intent.getStringExtra("powerMode");
 		webBrowser = intent.getStringExtra("webBrowser");
 		switchWifi = intent.getBooleanExtra("switchWifi", false);
-		
+		videoId = intent.getStringExtra("videoId");
+		switchVideoWifi = intent.getBooleanExtra("videoWifi", false);
 		emailAddress =intent.getStringExtra("emailAddress");
-		emailDetails = intent.getStringExtra("emailDetails");
  		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail + " number " + smsNum +
  				" ringtone "+ ringtone + " location "+ address1 + " " + address2 + " " + city + " " + state + " volume " + volume + " brightness " + brightness +" power "+ powermode
- 				+ "Web " +webBrowser + "wifiSwitch " + switchWifi + " email " + emailAddress + emailDetails);
+ 				+ "Web " +webBrowser + "wifiSwitch " + switchWifi + " email " + emailAddress + "videoId " + videoId +"video wifi "  + switchVideoWifi);
 		db_man = new DatabaseManager(this);
 		Cursor c = db_man.getTestFunctions();
 		for(int i = 0; c.moveToNext(); i++){
@@ -186,16 +190,14 @@ public void action(final int sp1Int, final int sp2Int) {
 						System.out.println("initial call run time = " + j);
 						for(; j>=0;j--){
 							System.out.println("call time left: " + j);
-							Message msg = Message.obtain(handler);
-							
-							msg.what = j;
+
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							handler.sendMessage(msg);
+						
 						}
 					}
 		        	
@@ -232,7 +234,7 @@ public void action(final int sp1Int, final int sp2Int) {
 				int smsNumInt = Integer.parseInt(smsNum);
 				while(s < smsNumInt + 1){
 					System.out.println("actionController: SMS is chosen");
-					Toast.makeText(getApplicationContext(), "Messages are sending...", Toast.LENGTH_SHORT).show();
+					
 					smsAdmin.sendSMS(telephoneNum, smsDetail);
 					System.out.println("actionController: this is No. " + s + " SMS.");
 				try {
@@ -268,15 +270,12 @@ public void action(final int sp1Int, final int sp2Int) {
 						System.out.println("initial wifi run time = " + j);
 						for(;j>= 0 ; j--){
 							System.out.println("wifi time left: " + j);
-							Message msg = Message.obtain(handler);
-							msg.what = j;
 							try {
 							     Thread.sleep(1000);
 						    }catch (InterruptedException e) {
 							    // TODO Auto-generated catch block
 							    e.printStackTrace();
 						     }
-							handler.sendMessage(msg);
 
 						}
 					}
@@ -321,8 +320,7 @@ public void action(final int sp1Int, final int sp2Int) {
 						System.out.println("initial BT run time = " + j);
 						for(;j>= 0 ; j--){
 							System.out.println("BT time left: " + j);
-							Message msg = Message.obtain(handler);
-							msg.what = j;
+
 			    			try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
@@ -331,7 +329,6 @@ public void action(final int sp1Int, final int sp2Int) {
 							}
 			    			
 //							}
-							handler.sendMessage(msg);
 
 						}
 					}
@@ -374,8 +371,6 @@ public void action(final int sp1Int, final int sp2Int) {
 						System.out.println("camera run time = " + j);
 						for(;j>= 0 ; j--){
 							System.out.println("camera time1 left: " + j);
-							Message msg = Message.obtain(handler);
-							msg.what = j;
 							takePic();
 			    			try {
 								Thread.sleep(1500);
@@ -391,7 +386,7 @@ public void action(final int sp1Int, final int sp2Int) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							handler.sendMessage(msg);
+
 
 						}
 					}
@@ -445,15 +440,12 @@ public void action(final int sp1Int, final int sp2Int) {
 							for(;c>= 0; c--){
 								
 							System.out.println("video recording time left: " + c);
-							Message msg = Message.obtain(handler);
-							msg.what = c;
 							try {
 								Thread.sleep(1000);
 							} catch (InterruptedException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							handler.sendMessage(msg);
 							if(c == sp2Int*60-2){
 								videoRecording();
 							}else if(c == 0){
@@ -504,15 +496,12 @@ public void action(final int sp1Int, final int sp2Int) {
 							System.out.println("initial music run time = " + j);
 							for(;j>= 0 ; j--){
 								System.out.println("Wei's timer music time left: " + j);
-								Message msg = Message.obtain(handler);
-								msg.what = j;
 								try {
 								     Thread.sleep(1000);
 							    }catch (InterruptedException e) {
 								    // TODO Auto-generated catch block
 								    e.printStackTrace();
 							     }
-								handler.sendMessage(msg);
 
 							}
 						}
@@ -567,8 +556,6 @@ public void action(final int sp1Int, final int sp2Int) {
 						System.out.println("initial gps run time = " + j);
 						for(;j>= 0 ; j--){
 							System.out.println("gps time left: " + j);
-							Message msg = Message.obtain(handler);
-							msg.what = j;
 							
 							try {
 							     Thread.sleep(1000);
@@ -576,8 +563,6 @@ public void action(final int sp1Int, final int sp2Int) {
 							    // TODO Auto-generated catch block
 							    e.printStackTrace();
 						     }
-							
-							handler.sendMessage(msg);
 
 						}
 					}
@@ -612,13 +597,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			if(canSwitch){
 				createMessage("Web Browser is starting...");
 
-				canSwitch=false;
-//				try {
-//					Thread.sleep(1000);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}			
+				canSwitch=false;			
 				System.out.println("actionController: website is chosen");
 				if(switchWifi){
 					wifiAdmin.openWifi();	
@@ -636,8 +615,6 @@ public void action(final int sp1Int, final int sp2Int) {
 						
 							System.out.println("initial website loop times = " + j);
 							for(; j>=0; j--){
-							Message msg = Message.obtain(handler);
-							msg.what = j;
 
 							try {
 							     Thread.sleep(1000);
@@ -645,7 +622,6 @@ public void action(final int sp1Int, final int sp2Int) {
 							    // TODO Auto-generated catch block
 							    e.printStackTrace();
 						     }
-							handler.sendMessage(msg);
 
 						    }	
 						
@@ -693,11 +669,11 @@ public void action(final int sp1Int, final int sp2Int) {
 					public void run() {
 						// TODO Auto-generated method stub
 						EmailAdmin emailAdmin = new EmailAdmin(
-								"mudvainian@gmail.com", "My090591");
+								"swipedevelopmentteam@gmail.com", "radyschool");
 						int numEmailSent = 0;
 						while(timer) {
 							try {
-								emailAdmin.sendMail("Battery Destroyer", "Test","r4castil@gmail.com");
+								emailAdmin.sendMail(SUBJECT, CONTENT, emailAddress);
 								numEmailSent++;
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -766,15 +742,12 @@ public void action(final int sp1Int, final int sp2Int) {
 							System.out.println("initial music run time = " + j);
 							for(;j>= 0 ; j--){
 								System.out.println("recorder time left: " + j);
-								Message msg = Message.obtain(handler);
-								msg.what = j;
 								try {
 								     Thread.sleep(1000);
 							    }catch (InterruptedException e) {
 								    // TODO Auto-generated catch block
 								    e.printStackTrace();
 							     }
-								handler.sendMessage(msg);
 
 							}
 						}
@@ -801,9 +774,67 @@ public void action(final int sp1Int, final int sp2Int) {
 				createMessage("Voice Recorder has ended...");
 				break;
 			}
+		case 14:
+		//Youtube VideoPlayer
+			if(canSwitch){
+				createMessage("Youtube VideoPlayer is starting...");
+				
+				canSwitch=false;
+				System.out.println("actionController:Youtube VideoPlayer is chosen.");
+				if(switchVideoWifi)	{
+					wifiAdmin.openWifi();
+					Log.d(TAG, "Video wifi in on..");
+				}
+				youtubeViewPlay(videoId);	
+					t14 = new Thread(new Runnable(){
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							int j = sp2Int*60;
+							System.out.println("initial videoPlayer run time = " + j);
+							for(;j>= 0 ; j--){
+								System.out.println("videoPlayer time left: " + j);
+								try {
+								     Thread.sleep(1000);
+							    }catch (InterruptedException e) {
+								    // TODO Auto-generated catch block
+								    e.printStackTrace();
+							     }
+
+							}
+						}
+						
+					});
+					t14.start();
+					int j = sp2Int*60;
+					for(;j >= 0; j--){
+		    			System.out.println("videoPlayer time left: " + j);
+		    			try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		    			if (j==0){
+		    				returnMain();
+		    				canSwitch = true;
+		    			}
+				    }
+					createMessage("Youtube VideoPlayer has ended...");
+					break;
+			}else{
+				createMessage("Youtube VideoPlayer has ended...");
+				break;
+			}	
 		}
 	}
-
+	private void youtubeViewPlay(String video_id){
+		Intent youtubeIntent = new Intent(this, YoutubeActivity.class);
+		youtubeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		youtubeIntent.putExtra("video_id", video_id);
+		this.startActivity(youtubeIntent);
+	}
 	private void createMessage(String messageToDisplay) {
 		Message message = new Message();
 		Bundle b = new Bundle();
@@ -815,11 +846,10 @@ public void action(final int sp1Int, final int sp2Int) {
 	private void openWebBrowser(String address){
 		String url = "http://"+ address;
 		Intent intent = new Intent();
+		intent.setClass(this, WebViewActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		intent.setAction("android.intent.action.VIEW");
-		Uri uri = Uri.parse(url);
-		intent.setData(uri);
-		startActivity(intent);
+		intent.putExtra("url", url);
+		this.startActivity(intent);
 	}
 	private void returnMain(){
 		Intent intent = new Intent(this, MainActivity.class);
@@ -884,14 +914,7 @@ public void action(final int sp1Int, final int sp2Int) {
 	    System.out.println("timeservice: GPS on or off");
 
  }
-//	private void voiceRecording(){
-//		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//		intent.setType(ContentType.AUDIO_AMR); //String AUDIO_AMR = "audio/amr";
-//		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//		intent.setClassName("com.android.soundrecorder",
-//		"com.android.soundrecorder.SoundRecorder");
-//		startActivityForResult(intent, requestCode);
-//	}
+
 	private void brightnessOptions(String brightness){
 		
 	}

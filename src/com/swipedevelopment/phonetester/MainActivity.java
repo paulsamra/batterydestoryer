@@ -35,9 +35,9 @@ public class MainActivity extends Activity{
 	Button run_btn;
 	public static ProgressBar progressbar;
 	SharedPreferences mySharedPreferences;
-	boolean loop_preference,switch_preference;
+	boolean loop_preference,web_wifi_preference,video_wifi_preference;
 	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
-	power_preference,brightness_preference,web_preference,email_preference1,email_preference2;
+	power_preference,brightness_preference,web_preference,email_preference1,video_preference;
 	DatabaseManager db_man;
 	public static Context context;
 //	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
@@ -86,9 +86,9 @@ public class MainActivity extends Activity{
 		});
 		
 		loadPref();
-		//loadDB();
+
 	}
-	
+
 	protected void onPause() {
 		// TODO Auto-generated method stub
 		super.onPause();
@@ -211,9 +211,11 @@ public class MainActivity extends Activity{
 		serviceIntent.putExtra("brightness", brightness_preference);
 		serviceIntent.putExtra("powerMode", power_preference);
 		serviceIntent.putExtra("webBrowser", web_preference);
-		serviceIntent.putExtra("switchWifi", switch_preference);
-		serviceIntent.putExtra("emailAddress", "");
-		serviceIntent.putExtra("emailDetails", "");
+		serviceIntent.putExtra("switchWifi", web_wifi_preference);
+		serviceIntent.putExtra("emailAddress", email_preference1);
+		serviceIntent.putExtra("videoId", video_preference);
+		serviceIntent.putExtra("videoWifi", video_wifi_preference);
+		
 		this.startService(serviceIntent);
 	}
 	
@@ -235,15 +237,19 @@ public class MainActivity extends Activity{
 		address_preference2 = mySharedPreferences.getString("EditTextPreference5", "");
 		city_preference = mySharedPreferences.getString("EditTextPreference6", "");
 		state_preference = mySharedPreferences.getString("EditTextPreference7", "");
-		//email address and details
+		//email address as receiver
 		email_preference1 = mySharedPreferences.getString("EditTextPreference8", "");
-		email_preference2 = mySharedPreferences.getString("EditTextPreference9", "");
+		//system settings preferences
 		volume_preference = mySharedPreferences.getString("ListPreference3", "1");
 		brightness_preference = mySharedPreferences.getString("ListPreference4", "1");
 		power_preference = mySharedPreferences.getString("ListPreference5", "1");
 		//web address and wifi use switch
 		web_preference = mySharedPreferences.getString("EditTextPreference3", "www.swipedevelopment.com");
-		switch_preference = mySharedPreferences.getBoolean("switchPreference", false);
+		web_wifi_preference = mySharedPreferences.getBoolean("SwitchPreference2", false);
+		//youtube video id
+		video_preference = mySharedPreferences.getString("ListPreference6", "dKi5XoeTN0k");
+		video_wifi_preference = mySharedPreferences.getBoolean("SwitchPreference3", false);
+		System.out.println("web: " + web_wifi_preference + "video:" + video_wifi_preference);
 	}
 	//disenable start btn when system running..
 //	private void enableButton(int id, boolean isEnable) {
