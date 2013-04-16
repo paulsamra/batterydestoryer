@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -97,12 +98,42 @@ public class YoutubeActivity extends YouTubeBaseActivity implements YouTubePlaye
 		fullscreen = isFullscreen;
 	}
 
+    
 	@Override
 	public void onInitializationFailure(Provider arg0,
-			YouTubeInitializationResult arg1) {
-		// TODO Auto-generated method stub
-		
-	}
+			YouTubeInitializationResult result) {
+		String message = "Error:\n";
+		if (result.equals (YouTubeInitializationResult.NETWORK_ERROR) ) {
+			message += "Unable to connect to network.  Please check your internet connection.";
+		}
+		else if (result.equals (YouTubeInitializationResult.SERVICE_DISABLED) ) {
+			message += "It appears that the YouTube application on your device is disabled." +
+					"  Please enable YouTube application to proceed with playing media.";
+		}
+		else if (result.equals (YouTubeInitializationResult.SERVICE_INVALID) ) {
+			message += "It appears that there is an application installed on this device " +
+					"(other than the YouTube application) that has the same name as the" +
+					" YouTube application.  Please remove conflicting application to " +
+					"proceed with playing media.";
+		}
+		else if (result.equals (YouTubeInitializationResult.SERVICE_MISSING) ) {
+			message += "The official YouTube application was not found on this device.  " +
+					"Please install the most up-to-date version of the YouTube " +
+					"application to proceed with playing media.";
+		}
+		else if (result.equals (YouTubeInitializationResult.SERVICE_VERSION_UPDATE_REQUIRED) ) {
+			message += "It appears that your YouTube application is out-of-date with the " +
+					"most current version.  Please update your YouTube application to " +
+					" proceed with playing media.";
+		}
+		else {
+			message = "Failed to play media.\n\nError:\n" + result.toString();
+		}
+		Toast.makeText (YoutubeActivity.this, message, Toast.LENGTH_LONG).show();
+		Log.e (TAG, message);
+		finish();
+
+}
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 	  super.onConfigurationChanged(newConfig);
