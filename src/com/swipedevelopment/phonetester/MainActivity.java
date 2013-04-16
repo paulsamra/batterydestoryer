@@ -23,7 +23,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
 
 public class MainActivity extends Activity{
 	TextView telephoneID,voltage,current,temperature,batteryStatus,batteryLevel,signalStrength_view,progressbar_text;
