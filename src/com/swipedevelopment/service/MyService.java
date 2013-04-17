@@ -113,7 +113,7 @@ public class MyService extends IntentService{
 		}
 		c.close();
 		db_man.close();
-		updateProgressBar(true);
+//		updateProgressBar(true);
 	}
 
 	static Handler handler = new Handler(){
@@ -146,17 +146,12 @@ public class MyService extends IntentService{
 //		emailAdmin = new EmailAdmin(this);
 //		nfcAdmin = new NFCAdmin(this);
 		recorderAdmin = new RecorderAdmin();
-		
-		powerOptions(powermode);
-		audioOptions(volume);
-		brightnessOptions(brightness);
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		powerRelease(powermode);
 	}
 
 public void action(final int sp1Int, final int sp2Int) {
@@ -226,7 +221,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			//SMS
 			if(canSwitch){
 				createMessage("SMS is staring...");
-
+				updateProgressBar(true);
 				canSwitch = false;
 				System.out.println("actionController: SMS is chosen.");
 				int s = 1;
@@ -243,6 +238,7 @@ public void action(final int sp1Int, final int sp2Int) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}	
+				updateProgressBar(false);
 					s++;
 				}
 				createMessage("SMS has ended...");
@@ -256,7 +252,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			//wifi
 			if(canSwitch){
 				createMessage("Wifi is staring...");
-
+				updateProgressBar(true);
 				canSwitch=false;			
 				System.out.println("actionController: wifi is chosen.");
 				wifiAdmin.openWifi();
@@ -289,6 +285,7 @@ public void action(final int sp1Int, final int sp2Int) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+	    			updateProgressBar(false);
 	    			if (j==0){
 	    				wifiAdmin.closeWifi();
 	    				canSwitch = true;
@@ -306,7 +303,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			//bluetooth
 			if(canSwitch){
 				createMessage("Bluetooth is starting...");
-
+				updateProgressBar(true);
 				canSwitch=false;
 				System.out.println("actionController: bluetooth is chosen");
 				bluetoothAdmin.openBluetooth();
@@ -343,6 +340,7 @@ public void action(final int sp1Int, final int sp2Int) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+	    			updateProgressBar(false);
 	    			if (j==0){
 
 	    				bluetoothAdmin.closeBluetooth();
@@ -359,7 +357,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			//camera snapshot
 			if(canSwitch){
 				createMessage("Camera is starting...");
-
+				updateProgressBar(true);
 				canSwitch=false;
 				t5 = new Thread(new Runnable(){
 					
@@ -479,7 +477,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			//ringtone
 			if(canSwitch){
 				createMessage("Music is starting...");
-
+				updateProgressBar(true);
 				canSwitch=false;
 				System.out.println("actionController: ringtone is chosen.");
 				if(!musicAdmin.checkPlaying()){
@@ -516,6 +514,7 @@ public void action(final int sp1Int, final int sp2Int) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+		    			updateProgressBar(false);
 		    			if (j==0){
 		    				musicAdmin.stopMusic();
 		    				canSwitch = true;
@@ -663,6 +662,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			if(canSwitch){
 				canSwitch = false;
 				createMessage("Email is starting...");
+				updateProgressBar(true);
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -727,11 +727,10 @@ public void action(final int sp1Int, final int sp2Int) {
 			//voice recorder
 			if(canSwitch){
 				createMessage("Voice Recorder is starting...");
-				
 				canSwitch=false;
 				System.out.println("actionController:Voice recorder is chosen.");
 				recorderAdmin.startRecording();	
-					
+				updateProgressBar(true);	
 					t13 = new Thread(new Runnable(){
 						
 						@Override
@@ -761,7 +760,9 @@ public void action(final int sp1Int, final int sp2Int) {
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
+							
 						}
+		    			updateProgressBar(false);
 		    			if (j==0){
 		    				recorderAdmin.stopRecording();
 		    				canSwitch = true;
@@ -870,34 +871,6 @@ public void action(final int sp1Int, final int sp2Int) {
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(intent);
 	}
-
-	//run power audio and brightness mode
-	private void powerOptions(String powermode){
-		powerAdmin = new PowerAdmin(this);
-		try{
-			int mode = Integer.parseInt(powermode);
-			powerAdmin.powerOption(mode);
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
-		
-	}
-	
-	private void powerRelease(String powermode){
-		int mode = Integer.parseInt(powermode);
-		powerAdmin.releasePower(mode);
-	}
-	
-	
-	private void audioOptions(String audioLevel){
-		audioAdmin = new AudioAdmin(this);
-		try{
-			int vol = Integer.parseInt(audioLevel);
-			audioAdmin.volumeOptionForMusic(vol);
-		}catch(Exception e){
-			e.printStackTrace();
-		}	
-	}
 	
 	public void turnGPSOnOff(){
 	    Intent poke = new Intent();
@@ -913,10 +886,6 @@ public void action(final int sp1Int, final int sp2Int) {
 	    System.out.println("timeservice: GPS on or off");
 
  }
-
-	private void brightnessOptions(String brightness){
-		
-	}
 	
 /********** For updating Progress Bar******************/	
 	void updateProgressBar(final boolean end) {

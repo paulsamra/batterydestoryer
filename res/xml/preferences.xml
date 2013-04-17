@@ -173,4 +173,14 @@
             android:entryValues="@array/power_array_value"
             android:defaultValue="@string/power_default_value"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="Lock Screen Settings">
+        <SwitchPreference 
+            android:key="SwitchPreference4"
+            android:title="Lock Screen Switch"
+            android:summaryOn="Screen: unlock"
+            android:summaryOff="Screen: lock"
+            android:defaultValue="false"
+            android:disableDependentsState="false"/>
+    </PreferenceCategory>
 </PreferenceScreen>

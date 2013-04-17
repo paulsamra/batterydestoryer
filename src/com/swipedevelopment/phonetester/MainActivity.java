@@ -1,5 +1,7 @@
 package com.swipedevelopment.phonetester;
 
+import com.swipedevelopment.functions.AudioAdmin;
+import com.swipedevelopment.functions.PowerAdmin;
 import com.swipedevelopment.service.MyService;
 import com.swipedevelopment.sql.DatabaseManager;
 import android.os.BatteryManager;
@@ -16,16 +18,19 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
 public class MainActivity extends Activity{
+	public static String TAG = "MainActivity";
 	TextView telephoneID,voltage,current,temperature,batteryStatus,batteryLevel,signalStrength_view,progressbar_text;
 	TelephonyManager telephonyManager;
 	SignalStrengthListener signalListener;
@@ -35,12 +40,13 @@ public class MainActivity extends Activity{
 	Button run_btn;
 	public static ProgressBar progressbar;
 	SharedPreferences mySharedPreferences;
-	boolean loop_preference,web_wifi_preference,video_wifi_preference;
+	boolean loop_preference,web_wifi_preference,video_wifi_preference,lock_screen_preference;
 	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
-	power_preference,brightness_preference,web_preference,email_preference1,video_preference;
+	power_preference,web_preference,email_preference1,video_preference, brightness_preference;
 	DatabaseManager db_man;
 	public static Context context;
-//	private ArrayList<RowInfo> row_state = new ArrayList<RowInfo>();
+	PowerAdmin powerAdmin;
+	AudioAdmin audioAdmin;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,7 +92,13 @@ public class MainActivity extends Activity{
 		});
 		
 		loadPref();
-
+		setBrightness(brightness_preference);
+		setPower(power_preference);
+		setVolume(volume_preference);
+		if(lock_screen_preference){
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			Log.d(TAG, "screen will keep on");
+		}
 	}
 
 	protected void onPause() {
@@ -101,12 +113,17 @@ public class MainActivity extends Activity{
 		super.onResume();
 		registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED)); 
 		telephonyManager.listen(signalListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
-		
+		setBrightness(brightness_preference);
+		if(lock_screen_preference){
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+			Log.d(TAG, "screen will keep on");
+		}
 	}
 	protected void onRestart() {
 		// TODO Auto-generated method stub
 		super.onRestart();
 		telephonyManager.listen(signalListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+		setBrightness(brightness_preference);
 	}
 	@Override
 	protected void onStart() {
@@ -208,7 +225,7 @@ public class MainActivity extends Activity{
 		serviceIntent.putExtra("city", city_preference);
 		serviceIntent.putExtra("state", state_preference);
 		serviceIntent.putExtra("volumeLevel", volume_preference);
-		serviceIntent.putExtra("brightness", brightness_preference);
+//		serviceIntent.putExtra("brightness", brightness_preference);
 		serviceIntent.putExtra("powerMode", power_preference);
 		serviceIntent.putExtra("webBrowser", web_preference);
 		serviceIntent.putExtra("switchWifi", web_wifi_preference);
@@ -241,7 +258,7 @@ public class MainActivity extends Activity{
 		email_preference1 = mySharedPreferences.getString("EditTextPreference8", "");
 		//system settings preferences
 		volume_preference = mySharedPreferences.getString("ListPreference3", "1");
-		brightness_preference = mySharedPreferences.getString("ListPreference4", "1");
+		brightness_preference = mySharedPreferences.getString("ListPreference4", "0.25");
 		power_preference = mySharedPreferences.getString("ListPreference5", "1");
 		//web address and wifi use switch
 		web_preference = mySharedPreferences.getString("EditTextPreference3", "www.swipedevelopment.com");
@@ -249,16 +266,37 @@ public class MainActivity extends Activity{
 		//youtube video id
 		video_preference = mySharedPreferences.getString("ListPreference6", "dKi5XoeTN0k");
 		video_wifi_preference = mySharedPreferences.getBoolean("SwitchPreference3", false);
-		System.out.println("web: " + web_wifi_preference + "video:" + video_wifi_preference);
+		//lock screen
+		lock_screen_preference = mySharedPreferences.getBoolean("SwitchPreference4", false);
 	}
-	//disenable start btn when system running..
-//	private void enableButton(int id, boolean isEnable) {
-//    ((Button) findViewById(id)).setEnabled(isEnable);
-//}
+	private void setBrightness(String arg1){
+		float value = Float.valueOf(arg1);
+		System.out.println("value " + value);
+		int brightnessValue = (int) (value*255);
+		android.provider.Settings.System.putInt(getContentResolver(),
+				android.provider.Settings.System. SCREEN_BRIGHTNESS, brightnessValue);
+		Log.d(TAG, "setBrightness: " + brightnessValue);
+	}
+	private void setPower(String arg1){
+		
+		int mode = Integer.parseInt(arg1);
+		powerAdmin = new PowerAdmin(MainActivity.this);
+		powerAdmin.powerOption(mode);
+		Log.d(TAG, "setPower: " + mode);
+	}
+	private void setVolume(String arg1){
+		int level = Integer.parseInt(arg1);
+		audioAdmin = new AudioAdmin(MainActivity.this);
+		audioAdmin.volumeOptionForSystem(level);
+		Log.d(TAG, "audio system setting");
+	}
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		int mode = Integer.parseInt(power_preference);
+		powerAdmin.releasePower(mode);
+		Log.d(TAG, "release power" + mode);
+	}
 	
-	//private void enableButtons(boolean isRecording) {
-//  enableButton(R.id.btnStart, !isRecording);
-//  enableButton(R.id.btnFormat, !isRecording);
-//  enableButton(R.id.btnStop, isRecording);
-//}
 }

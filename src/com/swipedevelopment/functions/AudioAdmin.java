@@ -15,50 +15,19 @@ public class AudioAdmin {
 		audioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
 	}
 	
-//	public void playSnapshotVoice(Context context){
-////		if(mediaPlayer == null){
-//			mediaPlayer = MediaPlayer.create(context, R.raw.beep2);
-//		    mediaPlayer.setLooping(false);
-//		    if(mediaPlayer != null){
-//		    	mediaPlayer.stop();
-//		    }
-//			try {
-//				mediaPlayer.prepare();
-//			} catch (IllegalStateException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		    mediaPlayer.start();	
-//		    System.out.println("beep2 is playing");
-////		}
-//
-//		  
-//	}
-
-	public void stopVoice1(){
-		if(mediaPlayer != null){
-			mediaPlayer.stop();
-			mediaPlayer.release();
-			System.out.println("voice1 stop");
-		}
-	}
-
-	public void volumeOptionForMusic(int audioLevel){
+	public void volumeOptionForSystem(int audioLevel){
 		switch(audioLevel){
 		case 0:
-			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(1), AudioManager.FLAG_SHOW_UI);
+			audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, audioManager.getStreamVolume(1), AudioManager.FLAG_SHOW_UI);
 			System.out.println("Hey you choose low volume audio option.");
 			break;
 
 		case 1:
-			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(4), AudioManager.FLAG_SHOW_UI);
+			audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, audioManager.getStreamVolume(4), AudioManager.FLAG_SHOW_UI);
 			System.out.println("Hey you choose medium volume audio option.");
 			break;
 	    case 2: 
-	    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_SHOW_UI);
+	    	audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM), AudioManager.FLAG_SHOW_UI);
 	    	System.out.println("Hey you choose high volume audio option.");
 	    	break;
 			}

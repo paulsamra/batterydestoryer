@@ -49,9 +49,9 @@
     <item>10</item>
 </string-array>
 <string-array name="volume_array_list">
-    <item>Low Volume</item>
-    <item>Medium Volume</item>
-    <item>High Volume</item>
+    <item>Low System Volume</item>
+    <item>Medium System Volume</item>
+    <item>High System Volume</item>
 </string-array>
 <string-array name="volume_array_value">
     <item>0</item>
@@ -59,16 +59,18 @@
     <item>2</item>
 </string-array>
 <string-array name="brightness_array_list">
-    <item>Low </item>
-    <item>Adjust</item>
-    <item>Half</item>
-    <item>Full</item>    
+    <item>5% </item>    
+    <item>25% </item>
+    <item>50%</item>
+    <item>75%</item>
+    <item>100%</item>    
 </string-array>
 <string-array name="brightness_array_value">
-    <item>0</item>
-    <item >1</item>
-    <item >2</item>
-    <item >3</item>
+    <item >0.05</item>
+    <item >0.25</item>
+    <item >0.50</item>
+    <item >0.75</item>
+    <item >1.00</item>
 </string-array>
 <string-array name="power_array_list">
     <item >Low</item>
