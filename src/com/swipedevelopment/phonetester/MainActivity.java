@@ -2,6 +2,7 @@ package com.swipedevelopment.phonetester;
 
 import com.swipedevelopment.functions.AudioAdmin;
 import com.swipedevelopment.functions.PowerAdmin;
+import com.swipedevelopment.functions.WifiAdmin;
 import com.swipedevelopment.service.MyService;
 import com.swipedevelopment.sql.DatabaseManager;
 import android.os.BatteryManager;
@@ -31,13 +32,15 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity{
 	public static String TAG = "MainActivity";
-	TextView telephoneID,voltage,current,temperature,batteryStatus,batteryLevel,signalStrength_view,progressbar_text;
+	TextView telephoneID,voltage,network,temperature,batteryStatus,batteryLevel,signalStrength_view,progressbar_text;
 	TelephonyManager telephonyManager;
 	SignalStrengthListener signalListener;
 	int dbm_result,asu_result, battery_voltage,level,scale,current_progress;
+	int wifiLevel,wifiSpeed;
+	String wifiSSID,wifiUnits;
 	double temper;
 	String battery_status;
-	Button run_btn;
+	public static Button run_btn;
 	public static ProgressBar progressbar;
 	SharedPreferences mySharedPreferences;
 	boolean loop_preference,web_wifi_preference,video_wifi_preference,lock_screen_preference;
@@ -47,6 +50,7 @@ public class MainActivity extends Activity{
 	public static Context context;
 	PowerAdmin powerAdmin;
 	AudioAdmin audioAdmin;
+	WifiAdmin wifiAdmin;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,12 +58,13 @@ public class MainActivity extends Activity{
 		context = this;
 		telephoneID = (TextView)findViewById(R.id.textView2);
 		voltage = (TextView)findViewById(R.id.textView4);
-		current = (TextView)findViewById(R.id.textView6);
+		network = (TextView)findViewById(R.id.textView6);
 		temperature = (TextView)findViewById(R.id.textView8);
 		batteryStatus = (TextView)findViewById(R.id.textView10);
 		signalStrength_view = (TextView)findViewById(R.id.textView12);
 		batteryLevel = (TextView)findViewById(R.id.textView14);
 		telephonyManager = (TelephonyManager)getSystemService(MainActivity.TELEPHONY_SERVICE);
+		wifiAdmin = new WifiAdmin(MainActivity.this);
 		signalListener = new SignalStrengthListener();
 		telephonyManager.listen(signalListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		String deviceId = telephonyManager.getDeviceId();
@@ -114,6 +119,7 @@ public class MainActivity extends Activity{
 		registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED)); 
 		telephonyManager.listen(signalListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		setBrightness(brightness_preference);
+		setVolume(volume_preference);
 		if(lock_screen_preference){
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 			Log.d(TAG, "screen will keep on");
@@ -180,6 +186,13 @@ public class MainActivity extends Activity{
 			dbm_result = -113 + 2*asu_result;
 //	        System.out.println("signal is " + dbm_result + " dBm"  + asu_result + " asu");
 	        signalStrength_view.setText(dbm_result + " dBm  " + asu_result+" asu");
+	        
+	        //	int wifiLevel,wifiSpeed; String wifiSSID,wifiUnits;
+	        wifiLevel = wifiAdmin.getWifiStrength();
+	        wifiSpeed = wifiAdmin.getWifiSpeed();
+	        wifiUnits = wifiAdmin.getWifiUnits();
+	        wifiSSID  = wifiAdmin.getWifiSSID();
+	        network.setText(wifiSSID + " Level:" + wifiLevel + " " + wifiSpeed + " " +wifiUnits);
 		}
 		
 	}

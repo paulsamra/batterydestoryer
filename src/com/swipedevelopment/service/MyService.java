@@ -109,6 +109,7 @@ public class MyService extends IntentService{
 			if(checkInt == 1){
 				action(sp1Int, sp2Int);
 //				System.out.println(sp1Int);
+				
 			}
 		}
 		c.close();
@@ -127,6 +128,14 @@ public class MyService extends IntentService{
 			
 			Toast.makeText(MainActivity.context,msg.getData().getString("toast"), 
 						Toast.LENGTH_LONG).show();
+			if(msg.getData().getString("toast").contains("End of Testing")){
+				MainActivity.run_btn.setClickable(true);
+				Log.d(TAG, "set Run Btn clickable");
+			}else{
+				MainActivity.run_btn.setClickable(false);
+				Log.d(TAG, "set Run Btn non-clickable");
+			}
+			
 		}
 		
 	};

@@ -18,16 +18,16 @@ public class AudioAdmin {
 	public void volumeOptionForSystem(int audioLevel){
 		switch(audioLevel){
 		case 0:
-			audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, audioManager.getStreamVolume(1), AudioManager.FLAG_SHOW_UI);
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(4), AudioManager.FLAG_SHOW_UI);
 			System.out.println("Hey you choose low volume audio option.");
 			break;
 
 		case 1:
-			audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, audioManager.getStreamVolume(4), AudioManager.FLAG_SHOW_UI);
+			audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamVolume(1), AudioManager.FLAG_SHOW_UI);
 			System.out.println("Hey you choose medium volume audio option.");
 			break;
 	    case 2: 
-	    	audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, audioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM), AudioManager.FLAG_SHOW_UI);
+	    	audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_SHOW_UI);
 	    	System.out.println("Hey you choose high volume audio option.");
 	    	break;
 			}
