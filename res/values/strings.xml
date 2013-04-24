@@ -11,4 +11,20 @@
     </string>
     <string name="power_default_value">1</string>
     <string name="video_default_id">1</string>
+    <string name="about_text">   Welcome to Swipe Development Inc. Swipe Development Inc. and/or its affiliates provide mobile development consulting, specializing in mobile battery drain analysis. Swipe Development provides our services subject to the following conditions. 
+
+By using the Battery Destroyer application, you agree to these conditions. Please read them carefully.
+
+COPYRIGHT
+All content included in or made available through any Swipe Development application, such as text, graphics, logos, button icons, images, audio clips, digital downloads, and data compilations is the property of Swipe Development or its content suppliers and protected by United States and international copyright laws. The compilation of all content included in or made available through any Swipe Development employee is the exclusive property of Swipe Development and protected by U.S. and international copyright laws.
+
+TRADEMARKS
+In addition, graphics, logos, page headers, button icons, scripts, and service names included in or made available through Swipe Development are trademarks or trade dress of Swipe Development in the U.S. and other countries. Swipe Development’s trademarks and trade dress may not be used in connection with any product or service that is not Swipe Development’s, in any manner that is likely to cause confusion among customers, or in any manner that disparages or discredits Swipe Development. 
+
+Company Address: 
+
+Swipe Development Inc. 
+330 A Street, Suite 188
+San Diego, CA 92101 
+</string>
 </resources>

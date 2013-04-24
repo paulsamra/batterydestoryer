@@ -33,6 +33,7 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 public class MyService extends IntentService{
@@ -108,13 +109,13 @@ public class MyService extends IntentService{
 			int checkInt = Integer.parseInt(c.getString(3));
 			if(checkInt == 1){
 				action(sp1Int, sp2Int);
-//				System.out.println(sp1Int);
+//				System.out.println("action()");
 				
 			}
 		}
 		c.close();
 		db_man.close();
-//		updateProgressBar(true);
+		updateProgressBar(true);
 	}
 
 	static Handler handler = new Handler(){
@@ -128,14 +129,40 @@ public class MyService extends IntentService{
 			
 			Toast.makeText(MainActivity.context,msg.getData().getString("toast"), 
 						Toast.LENGTH_LONG).show();
-			if(msg.getData().getString("toast").contains("End of Testing")){
-				MainActivity.run_btn.setClickable(true);
-				Log.d(TAG, "set Run Btn clickable");
-			}else{
-				MainActivity.run_btn.setClickable(false);
-				Log.d(TAG, "set Run Btn non-clickable");
+//			if(msg.getData().getString("toast").contains("End of Testing")){
+//				MainActivity.run_btn.setClickable(true);
+//				Log.d(TAG, "set Run Btn clickable");
+//			}else{
+//				MainActivity.run_btn.setClickable(false);
+//				Log.d(TAG, "set Run Btn non-clickable");
+//			}
+			if(msg.getData().getString("toast").contains("SMS")){
+				MainActivity.progressbar_text.setText("Current Progress: SMS");
+			}else if(msg.getData().getString("toast").contains("Wifi")){
+				MainActivity.progressbar_text.setText("Current Progress: Wifi");
+			}else if(msg.getData().getString("toast").contains("Bluetooth")){
+				MainActivity.progressbar_text.setText("Current Progress: Bluetooth");
+			}else if(msg.getData().getString("toast").contains("Ringtone")){
+				MainActivity.progressbar_text.setText("Current Progress: Ringtone");
+			}else if(msg.getData().getString("toast").contains("GPS")){
+				MainActivity.progressbar_text.setText("Current Progress: GPS");
+			}else if(msg.getData().getString("toast").contains("Voice Recorder")){
+				MainActivity.progressbar_text.setText("Current Progress: Voice Recorder");
+			}else if(msg.getData().getString("toast").contains("Phone Call")){
+				MainActivity.progressbar_text.setText("Current Progress: Phone Call");
+			}else if(msg.getData().getString("toast").contains("Email")){
+				MainActivity.progressbar_text.setText("Current Progress: Email");
+			}else if(msg.getData().getString("toast").contains("Web")){
+				MainActivity.progressbar_text.setText("Current Progress: Web Browser");
+			}else if(msg.getData().getString("toast").contains("NFC")){
+				MainActivity.progressbar_text.setText("Current Progress: NFC");
+			}else if(msg.getData().getString("toast").contains("Camera")){
+				MainActivity.progressbar_text.setText("Current Progress: Camera");
+			}else if(msg.getData().getString("toast").contains("Video Recording")){
+				MainActivity.progressbar_text.setText("Current Progress: Video Recording");
+			}else if(msg.getData().getString("toast").contains("Youtube")){
+				MainActivity.progressbar_text.setText("Current Progress: Youtube Player");
 			}
-			
 		}
 		
 	};
@@ -152,8 +179,6 @@ public class MyService extends IntentService{
 		bluetoothAdmin = new BluetoothAdmin(this);
 		cameraAdmin = new CameraAdmin(this);
 		musicAdmin = new MusicAdmin(this);
-//		emailAdmin = new EmailAdmin(this);
-//		nfcAdmin = new NFCAdmin(this);
 		recorderAdmin = new RecorderAdmin();
 	}
 
@@ -175,7 +200,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			//Call
 			if(canSwitch){
 				createMessage("Phone Call is starting...");
-
+			
 				canSwitch = false;
 				try {
 					teleAdmin.callPhone(telephoneNum);
@@ -230,7 +255,8 @@ public void action(final int sp1Int, final int sp2Int) {
 			//SMS
 			if(canSwitch){
 				createMessage("SMS is staring...");
-				updateProgressBar(true);
+//				updateProgressBar(true);
+				
 				canSwitch = false;
 				System.out.println("actionController: SMS is chosen.");
 				int s = 1;
@@ -260,8 +286,9 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 3:
 			//wifi
 			if(canSwitch){
-				createMessage("Wifi is staring...");
-				updateProgressBar(true);
+				createMessage("Wifi is starting...");
+//				updateProgressBar(true);
+				
 				canSwitch=false;			
 				System.out.println("actionController: wifi is chosen.");
 				wifiAdmin.openWifi();
@@ -312,7 +339,8 @@ public void action(final int sp1Int, final int sp2Int) {
 			//bluetooth
 			if(canSwitch){
 				createMessage("Bluetooth is starting...");
-				updateProgressBar(true);
+//				updateProgressBar(true);
+				
 				canSwitch=false;
 				System.out.println("actionController: bluetooth is chosen");
 				bluetoothAdmin.openBluetooth();
@@ -332,8 +360,6 @@ public void action(final int sp1Int, final int sp2Int) {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-			    			
-//							}
 
 						}
 					}
@@ -366,7 +392,8 @@ public void action(final int sp1Int, final int sp2Int) {
 			//camera snapshot
 			if(canSwitch){
 				createMessage("Camera is starting...");
-				updateProgressBar(true);
+//				updateProgressBar(true);
+				
 				canSwitch=false;
 				t5 = new Thread(new Runnable(){
 					
@@ -427,6 +454,7 @@ public void action(final int sp1Int, final int sp2Int) {
 				//camera recorder
 				if(canSwitch){
 					canSwitch=false;
+					
 					try {
 						Thread.sleep(1500);
 					} catch (InterruptedException e) {
@@ -485,8 +513,9 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 7:
 			//ringtone
 			if(canSwitch){
-				createMessage("Music is starting...");
-				updateProgressBar(true);
+				createMessage("Ringtone is starting...");
+//				updateProgressBar(true);
+			
 				canSwitch=false;
 				System.out.println("actionController: ringtone is chosen.");
 				if(!musicAdmin.checkPlaying()){
@@ -530,17 +559,17 @@ public void action(final int sp1Int, final int sp2Int) {
 		    			}
 				    }
 				}
-				createMessage("Music has ended...");
+				createMessage("Ringtone has ended...");
 				break;
 			}else {
-				createMessage("Music has ended...");
+				createMessage("Ringtone has ended...");
 				break;
 			}
 			case 8:
 			//GPS
 				if(canSwitch){
 					createMessage("GPS is starting...");
-
+		
 					canSwitch=false;
 			
 				System.out.println("actionController: GPS is chosen");
@@ -671,7 +700,8 @@ public void action(final int sp1Int, final int sp2Int) {
 			if(canSwitch){
 				canSwitch = false;
 				createMessage("Email is starting...");
-				updateProgressBar(true);
+				
+//				updateProgressBar(true);
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
@@ -714,7 +744,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			//NFC
 			if(canSwitch){
 				createMessage("NFC is starting...");
-
+				
 				createMessage("NFC has ended...");
 				break;
 			}else{
@@ -725,7 +755,7 @@ public void action(final int sp1Int, final int sp2Int) {
 			//3D
 			if(canSwitch){
 				createMessage("3D Graphics is starting...");
-
+				
 				createMessage("3D Graphics has ended...");
 				break;
 			}else{
@@ -739,7 +769,8 @@ public void action(final int sp1Int, final int sp2Int) {
 				canSwitch=false;
 				System.out.println("actionController:Voice recorder is chosen.");
 				recorderAdmin.startRecording();	
-				updateProgressBar(true);	
+//				updateProgressBar(true);	
+				
 					t13 = new Thread(new Runnable(){
 						
 						@Override
@@ -902,13 +933,16 @@ public void action(final int sp1Int, final int sp2Int) {
 			@Override
 			public void run() {
 				int curr_prog = MainActivity.progressbar.getProgress();
+				MainActivity.progressbar.setVisibility(ProgressBar.VISIBLE);
 				MainActivity.progressbar.setProgress(++curr_prog);
-				System.out.println("hey man");
+				System.out.println("updateProgressing");
 				if(end) {
 					MainActivity.progressbar.setProgress(0);
 					createMessage("End of Testing...");
+					MainActivity.progressbar_text.setText("Current Progress: None");
 				}
 			}
 		});
 	}
+
 }

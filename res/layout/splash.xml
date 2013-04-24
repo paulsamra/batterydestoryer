@@ -30,4 +30,13 @@
 		android:layout_marginBottom="150dp"
 		android:src="@drawable/logo" />
 
+	<TextView
+	    android:id="@+id/textView1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/logotext"
+	    android:layout_alignRight="@+id/logotext"
+	    android:layout_marginBottom="34dp"
+	    android:text="Beta 1.1.0" />
+
 </RelativeLayout>

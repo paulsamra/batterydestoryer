@@ -62,16 +62,6 @@
         android:layout_below="@+id/textView11"
         android:text="BatteryLevel:" />
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="46dp"
-        android:layout_marginTop="32dp"
-        android:text="Device ID:" />
-
     <ProgressBar
         android:id="@+id/progressbar"
         style="?android:attr/progressBarStyleHorizontal"
@@ -102,15 +92,6 @@
         android:layout_alignLeft="@+id/textView4"
         android:lines="1"
         android:text="888888" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/textView6"
-        android:layout_alignLeft="@+id/textView6"
-        android:lines="1"
-        android:text="44444444" />
 
     <TextView
         android:id="@+id/textView10"
@@ -146,16 +127,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/textView8"
-        android:layout_alignRight="@+id/progressbar"
+        android:layout_alignLeft="@+id/textView8"
         android:lines="1"
         android:text="6666666666666666" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="34dp"
+        android:layout_toLeftOf="@+id/button1"
+        android:text="Device ID:" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView6"
+        android:layout_alignLeft="@+id/textView2"
+        android:lines="1"
+        android:text="44444444" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/textView4"
-        android:layout_alignLeft="@+id/textView4"
+        android:layout_alignRight="@+id/progressbar"
+        android:layout_marginRight="30dp"
         android:lines="1"
         android:text="2222222222222222" />
 

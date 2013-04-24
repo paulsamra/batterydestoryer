@@ -32,7 +32,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity{
 	public static String TAG = "MainActivity";
-	TextView telephoneID,voltage,network,temperature,batteryStatus,batteryLevel,signalStrength_view,progressbar_text;
+	TextView telephoneID,voltage,network,temperature,batteryStatus,batteryLevel,signalStrength_view;
+	public static TextView progressbar_text;
 	TelephonyManager telephonyManager;
 	SignalStrengthListener signalListener;
 	int dbm_result,asu_result, battery_voltage,level,scale,current_progress;
@@ -91,6 +92,7 @@ public class MainActivity extends Activity{
 				progressbar.setProgress(0);
 				c.close();
 				db_man.close();
+			
 				run();
 			}
 			
@@ -245,8 +247,18 @@ public class MainActivity extends Activity{
 		serviceIntent.putExtra("emailAddress", email_preference1);
 		serviceIntent.putExtra("videoId", video_preference);
 		serviceIntent.putExtra("videoWifi", video_wifi_preference);
+		if(loop_preference){
+			int loop = 0;
+			do {
+				this.startService(serviceIntent);
+				loop++;
+				Log.d(TAG, "Loop time: " + loop);
+			}while(loop<1000);
+		}else{
+			this.startService(serviceIntent);
+			Log.d(TAG, "no Loop");
+		}
 		
-		this.startService(serviceIntent);
 	}
 	
 	@Override
