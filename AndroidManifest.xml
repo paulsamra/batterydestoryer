@@ -10,13 +10,13 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/swipe_icon1"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <receiver
             android:name="com.swipedevelopment.phonetester.BatteryWidget"
             android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher">
+            android:icon="@drawable/swipe_icon1">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
                 <action android:name="COM.LJQ.ACTION.WIDGET.CLICK"/>
@@ -27,7 +27,7 @@
         <receiver
             android:name="com.swipedevelopment.service.PhoneBroadcaster"
             android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher">
+            android:icon="@drawable/swipe_icon1">
             <intent-filter >
                 <action android:name="android.intent.action.PHONE_START"/>
             </intent-filter>

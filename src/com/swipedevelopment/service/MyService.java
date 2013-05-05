@@ -199,9 +199,9 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 1:
 			//Call
 			if(canSwitch){
+				canSwitch = false;
 				createMessage("Phone Call is starting...");
 			
-				canSwitch = false;
 				try {
 					teleAdmin.callPhone(telephoneNum);
 				} catch (RemoteException e) {
@@ -334,10 +334,9 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 3:
 			//wifi
 			if(canSwitch){
+				canSwitch=false;
 				createMessage("Wifi is starting...");
-//				updateProgressBar(true);
-				
-				canSwitch=false;			
+							
 				System.out.println("actionController: wifi is chosen.");
 				wifiAdmin.openWifi();
 				t3 = new Thread(new Runnable(){
@@ -386,10 +385,9 @@ public void action(final int sp1Int, final int sp2Int) {
 			case 4:
 			//bluetooth
 			if(canSwitch){
-				createMessage("Bluetooth is starting...");
-//				updateProgressBar(true);
-				
 				canSwitch=false;
+				createMessage("Bluetooth is starting...");
+				
 				System.out.println("actionController: bluetooth is chosen");
 				bluetoothAdmin.openBluetooth();
 				t4 = new Thread(new Runnable(){
@@ -502,15 +500,14 @@ public void action(final int sp1Int, final int sp2Int) {
 				//camera recorder
 				if(canSwitch){
 					canSwitch=false;
-					
+					createMessage("Video Recoding is starting...");
 					try {
 						Thread.sleep(1500);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					createMessage("Video Recoding is starting...");
-
+					
 					t6 = new Thread(new Runnable(){
 
 						@Override
@@ -561,10 +558,10 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 7:
 			//ringtone
 			if(canSwitch){
+				canSwitch=false;
 				createMessage("Ringtone is starting...");
 //				updateProgressBar(true);
-			
-				canSwitch=false;
+		
 				System.out.println("actionController: ringtone is chosen.");
 				if(!musicAdmin.checkPlaying()){
 					musicAdmin.playMusic(this, ringtone);
@@ -616,10 +613,9 @@ public void action(final int sp1Int, final int sp2Int) {
 			case 8:
 			//GPS
 				if(canSwitch){
-					createMessage("GPS is starting...");
-		
 					canSwitch=false;
-			
+					createMessage("GPS is starting...");
+
 				System.out.println("actionController: GPS is chosen");
 				try {
 					Thread.sleep(2000);
@@ -679,9 +675,9 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 9:
 			//web browser
 			if(canSwitch){
+				canSwitch=false;	
 				createMessage("Web Browser is starting...");
 
-				canSwitch=false;			
 				System.out.println("actionController: website is chosen");
 				if(switchWifi){
 					wifiAdmin.openWifi();	
@@ -865,9 +861,14 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 14:
 		//Youtube VideoPlayer
 			if(canSwitch){
-				createMessage("Youtube VideoPlayer is starting...");
-				
 				canSwitch=false;
+				createMessage("Youtube VideoPlayer is starting...");
+				try {
+				     Thread.sleep(1000);
+			    }catch (InterruptedException e) {
+				    // TODO Auto-generated catch block
+				    e.printStackTrace();
+			     }
 				System.out.println("actionController:Youtube VideoPlayer is chosen.");
 				if(switchVideoWifi)	{
 					wifiAdmin.openWifi();
@@ -945,6 +946,7 @@ public void action(final int sp1Int, final int sp2Int) {
 	private void returnMain(){
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
 	}
 	private void videoRecording(){
