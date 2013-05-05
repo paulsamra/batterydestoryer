@@ -45,7 +45,7 @@ public class MainActivity extends Activity{
 	public static ProgressBar progressbar;
 	SharedPreferences mySharedPreferences;
 	boolean loop_preference,web_wifi_preference,video_wifi_preference,lock_screen_preference;
-	String telephone_preference,sms_preference,smsNum_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
+	String telephone_preference,sms_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
 	power_preference,web_preference,email_preference1,video_preference, brightness_preference;
 	DatabaseManager db_man;
 	public static Context context;
@@ -99,12 +99,16 @@ public class MainActivity extends Activity{
 		});
 		
 		loadPref();
+		Log.d(TAG, "brightness: " + brightness_preference + "power: " + power_preference + "volume: " + volume_preference + "lock screen: " + lock_screen_preference);
 		setBrightness(brightness_preference);
 		setPower(power_preference);
 		setVolume(volume_preference);
 		if(lock_screen_preference){
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 			Log.d(TAG, "screen will keep on");
+		}else{
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+			Log.d(TAG, "allow screen locked");
 		}
 	}
 
@@ -118,6 +122,7 @@ public class MainActivity extends Activity{
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		loadPref();
 		registerReceiver(batteryInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED)); 
 		telephonyManager.listen(signalListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		setBrightness(brightness_preference);
@@ -125,11 +130,15 @@ public class MainActivity extends Activity{
 		if(lock_screen_preference){
 			getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 			Log.d(TAG, "screen will keep on");
+		}else{
+			getWindow().addFlags(WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+			Log.d(TAG, "allow screen locked");
 		}
 	}
 	protected void onRestart() {
 		// TODO Auto-generated method stub
 		super.onRestart();
+		loadPref();
 		telephonyManager.listen(signalListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		setBrightness(brightness_preference);
 	}
@@ -233,15 +242,15 @@ public class MainActivity extends Activity{
 		serviceIntent.putExtra("loopStatus", loop_preference);
 		serviceIntent.putExtra("telephoneNum",telephone_preference);
 		serviceIntent.putExtra("smsDetail", sms_preference);
-		serviceIntent.putExtra("smsNumber", smsNum_preference);
+
 		serviceIntent.putExtra("ringtone", ringtone_preference);
 		serviceIntent.putExtra("address1", address_preference1);
 		serviceIntent.putExtra("address2", address_preference2);
 		serviceIntent.putExtra("city", city_preference);
 		serviceIntent.putExtra("state", state_preference);
-		serviceIntent.putExtra("volumeLevel", volume_preference);
+//		serviceIntent.putExtra("volumeLevel", volume_preference);
 //		serviceIntent.putExtra("brightness", brightness_preference);
-		serviceIntent.putExtra("powerMode", power_preference);
+//		serviceIntent.putExtra("powerMode", power_preference);
 		serviceIntent.putExtra("webBrowser", web_preference);
 		serviceIntent.putExtra("switchWifi", web_wifi_preference);
 		serviceIntent.putExtra("emailAddress", email_preference1);
@@ -268,23 +277,28 @@ public class MainActivity extends Activity{
 		}
 	
 	private void loadPref(){
-		mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+		
 		loop_preference = mySharedPreferences.getBoolean("Checkbox1", false);
 		telephone_preference = mySharedPreferences.getString("EditTextPreference1", "");
 		sms_preference = mySharedPreferences.getString("EditTextPreference2", "");
-		smsNum_preference = mySharedPreferences.getString("ListPreference2", "");
+
 		ringtone_preference = mySharedPreferences.getString("ringtone", "<unset>");
+		
 		//location including 4 parts: address line1&2, city, and state
 		address_preference1 = mySharedPreferences.getString("EditTextPreference4", "");
 		address_preference2 = mySharedPreferences.getString("EditTextPreference5", "");
 		city_preference = mySharedPreferences.getString("EditTextPreference6", "");
 		state_preference = mySharedPreferences.getString("EditTextPreference7", "");
+		
 		//email address as receiver
 		email_preference1 = mySharedPreferences.getString("EditTextPreference8", "");
+		
 		//system settings preferences
 		volume_preference = mySharedPreferences.getString("ListPreference3", "1");
 		brightness_preference = mySharedPreferences.getString("ListPreference4", "0.25");
 		power_preference = mySharedPreferences.getString("ListPreference5", "1");
+		
 		//web address and wifi use switch
 		web_preference = mySharedPreferences.getString("EditTextPreference3", "www.swipedevelopment.com");
 		web_wifi_preference = mySharedPreferences.getBoolean("SwitchPreference2", false);
@@ -293,6 +307,8 @@ public class MainActivity extends Activity{
 		video_wifi_preference = mySharedPreferences.getBoolean("SwitchPreference3", false);
 		//lock screen
 		lock_screen_preference = mySharedPreferences.getBoolean("SwitchPreference4", false);
+		
+		Log.d(TAG, "loop: " + loop_preference + "wifi_preference: " + web_wifi_preference + "video_wifi: " + video_wifi_preference +"lock_screen_preference: " + lock_screen_preference);
 	}
 	private void setBrightness(String arg1){
 		float value = Float.valueOf(arg1);

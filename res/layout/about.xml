@@ -3,30 +3,93 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
      >
+	<ImageView
+	    android:id="@+id/about_logo"
+	    android:layout_width="220dp"
+	    android:layout_height="100dp"
+	    android:layout_alignParentTop="true"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="21dp"
+	    android:src="@drawable/logo" />
 
-     <ImageView
-         android:id="@+id/about_logo"
-         android:layout_width="220dp"
-         android:layout_height="100dp"
-         android:layout_alignParentTop="true"
-         android:layout_centerHorizontal="true"
-         android:layout_marginTop="40dp"
-         android:src="@drawable/logo" />
+	<TextView
+	    android:id="@+id/text1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/about_logo"
+	    android:layout_centerHorizontal="true"
+	    android:text="Android Version of Battery Destroyer" />
 
-	<ScrollView
-	    android:id="@+id/about_view"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:layout_marginLeft="10dp"
-	    android:layout_marginRight="10dp"
-	    android:layout_below="@+id/about_logo">
+	<TextView
+	    android:id="@+id/text2"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/text1"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="14dp"
+	    android:text="Beta Version: 1.1.1" />
 
-	    <TextView
-	        android:layout_width="match_parent"
-	        android:layout_height="438dp"
-	        android:layout_gravity="center"
-	        android:text="@string/about_text" />
-"
-	    </ScrollView>
+	<TextView
+	    android:id="@+id/text4"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/text3"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="14dp"
+	    android:text="@string/swipe_address1" />
 
+	<TextView
+	    android:id="@+id/text7"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/text8"
+	    android:layout_alignRight="@+id/about_logo"
+	    android:layout_marginBottom="15dp"
+	    android:text="Swipe Development Legal Matters"
+	    android:textColor="@color/blue" />
+
+	<TextView
+	    android:id="@+id/text5"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/text4"
+	    android:layout_below="@+id/text4"
+	    android:text="@string/swipe_address2" />
+
+	<TextView
+	    android:id="@+id/text6"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/text5"
+	    android:layout_below="@+id/text5"
+	    android:text="@string/swipe_address3" />
+
+	<TextView
+	    android:id="@+id/text3"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/about_logo"
+	    android:layout_centerVertical="true"
+	    android:text="Company Information:" />
+
+	<TextView
+	    android:id="@+id/homepageUrl"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/text6"
+	    android:layout_below="@+id/text6"
+	    android:autoLink="web"
+	    android:linksClickable="true"
+	    android:text="@string/homepage" />
+
+	<TextView
+	    android:id="@+id/text8"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentBottom="true"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginBottom="15dp"
+	    android:gravity="center"
+	    android:text="@string/about_copyright_title" />
+    
 </RelativeLayout>

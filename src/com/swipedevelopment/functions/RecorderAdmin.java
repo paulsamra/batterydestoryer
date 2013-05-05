@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import android.media.MediaRecorder;
 import android.os.Environment;
+import android.util.Log;
 
 public class RecorderAdmin {
 
@@ -15,6 +16,7 @@ public class RecorderAdmin {
 	private int currentFormat = 0;
 	private int output_formats[] = { MediaRecorder.OutputFormat.MPEG_4, MediaRecorder.OutputFormat.THREE_GPP };
 	private String file_exts[] = { AUDIO_RECORDER_FILE_EXT_MP4, AUDIO_RECORDER_FILE_EXT_3GP };
+
 	public RecorderAdmin(){
 		recorder = new MediaRecorder();
 	}
@@ -39,6 +41,7 @@ public class RecorderAdmin {
 	    try {
 	        recorder.prepare();
 	        recorder.start();
+	        
 	    } catch (IllegalStateException e) {
 	        e.printStackTrace();
 	    } catch (IOException e) {
@@ -48,12 +51,14 @@ public class RecorderAdmin {
 
 	public void stopRecording() {
 	    if (null != recorder) {
+	    	
 	        recorder.stop();
 	        recorder.reset();
 	        recorder.release();
 	        recorder = null;
 	    }
 	}
+
 
 
 }

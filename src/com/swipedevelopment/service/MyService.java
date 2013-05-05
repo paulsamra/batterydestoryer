@@ -40,8 +40,9 @@ public class MyService extends IntentService{
 	private static final String TAG = "MyService";
 	public static String SUBJECT ="Swipe Development Bettery Testing";
 	public static String CONTENT = "Testing";
-	String telephoneNum,smsDetail,smsNum,ringtone,address1,address2,city,state,volume,brightness,powermode,webBrowser,emailAddress,videoId;
-	boolean loopStatus,switchWifi,switchVideoWifi,timer = true;
+	String telephoneNum,smsDetail,ringtone,address1,address2,city,state,webBrowser,emailAddress,videoId;
+	boolean loopStatus,switchWifi, switchVideoWifi;
+	boolean timer = true;
 	TelephonyAdmin teleAdmin;
 	SMSAdmin smsAdmin;
 	WifiAdmin wifiAdmin;
@@ -76,7 +77,7 @@ public class MyService extends IntentService{
 		loopStatus = intent.getBooleanExtra("loopStatus", false);
 		telephoneNum = intent.getStringExtra("telephoneNum");
 		smsDetail = intent.getStringExtra("smsDetail");
-		smsNum = intent.getStringExtra("smsNumber");
+
 		ringtone = intent.getStringExtra("ringtone");
 		
 		address1 = intent.getStringExtra("address1");
@@ -84,17 +85,16 @@ public class MyService extends IntentService{
 		city = intent.getStringExtra("city");
 		state = intent.getStringExtra("state");
 		
-		volume = intent.getStringExtra("volumeLevel");
-		brightness = intent.getStringExtra("brightness");
-		powermode = intent.getStringExtra("powerMode");
+//		volume = intent.getStringExtra("volumeLevel");
+//		brightness = intent.getStringExtra("brightness");
+//		powermode = intent.getStringExtra("powerMode");
 		webBrowser = intent.getStringExtra("webBrowser");
 		switchWifi = intent.getBooleanExtra("switchWifi", false);
 		videoId = intent.getStringExtra("videoId");
 		switchVideoWifi = intent.getBooleanExtra("videoWifi", false);
 		emailAddress =intent.getStringExtra("emailAddress");
- 		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail + " number " + smsNum +
- 				" ringtone "+ ringtone + " location "+ address1 + " " + address2 + " " + city + " " + state + " volume " + volume + " brightness " + brightness +" power "+ powermode
- 				+ "Web " +webBrowser + "wifiSwitch " + switchWifi + " email " + emailAddress + "videoId " + videoId +"video wifi "  + switchVideoWifi);
+ 		Log.d(TAG, "loopStatus " + loopStatus + " tele:" + telephoneNum + " smsDetail: " + smsDetail +
+ 				" ringtone "+ ringtone + " location "+ address1 + " " + address2 + " " + city + " " + state + "Web " +webBrowser + "wifiSwitch " + switchWifi + " email " + emailAddress + "videoId " + videoId +"videoWifi: " + switchVideoWifi);
 		db_man = new DatabaseManager(this);
 		Cursor c = db_man.getTestFunctions();
 		for(int i = 0; c.moveToNext(); i++){
@@ -254,34 +254,82 @@ public void action(final int sp1Int, final int sp2Int) {
 		case 2:
 			//SMS
 			if(canSwitch){
-				createMessage("SMS is staring...");
-//				updateProgressBar(true);
-				
 				canSwitch = false;
-				System.out.println("actionController: SMS is chosen.");
-				int s = 1;
-				int smsNumInt = Integer.parseInt(smsNum);
-				while(s < smsNumInt + 1){
-					System.out.println("actionController: SMS is chosen");
-					
-					smsAdmin.sendSMS(telephoneNum, smsDetail);
-					System.out.println("actionController: this is No. " + s + " SMS.");
-				try {
-					Thread.sleep(1000);
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-				updateProgressBar(false);
-					s++;
+				createMessage("SMS is starting...");
+
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						
+						int numSMSSent = 0;
+						while(timer) {
+							try {
+								smsAdmin.sendSMS(telephoneNum, smsDetail);
+//								Log.d(TAG, "msg");
+								try {
+									Thread.sleep(1000);
+								} catch (InterruptedException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								numSMSSent++;
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+						System.out.println("Num SMS sent: " + numSMSSent);
+						timer = true;
+					}
+				}).start();
+				
+				int j = sp2Int*60;
+				for(;j >= 0; j--){
+					System.out.println("SMS time left: " + j + " " + timer);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					updateProgressBar(false);
 				}
+				timer = false;
+			
 				createMessage("SMS has ended...");
 				break;
 			}else{
-				createMessage("SMS has ended...");
 				break;
 			}
+//			if(canSwitch){
+//				createMessage("SMS is staring...");
+////				updateProgressBar(true);
+//				
+//				canSwitch = false;
+//				System.out.println("actionController: SMS is chosen.");
+//				int s = 1;
+//				int smsNumInt = Integer.parseInt(smsNum);
+//				while(s < smsNumInt + 1){
+//					System.out.println("actionController: SMS is chosen");
+//					
+//					smsAdmin.sendSMS(telephoneNum, smsDetail);
+//					System.out.println("actionController: this is No. " + s + " SMS.");
+//				try {
+//					Thread.sleep(1000);
+//					
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}	
+//				updateProgressBar(false);
+//					s++;
+//				}
+//				createMessage("SMS has ended...");
+//				break;
+//			}else{
+//				createMessage("SMS has ended...");
+//				break;
+//			}
 
 		case 3:
 			//wifi
@@ -857,6 +905,9 @@ public void action(final int sp1Int, final int sp2Int) {
 							e.printStackTrace();
 						}
 		    			if (j==0){
+		    				if(switchVideoWifi){
+		    					wifiAdmin.closeWifi();
+		    				}
 		    				returnMain();
 		    				canSwitch = true;
 		    			}

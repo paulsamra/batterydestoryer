@@ -24,6 +24,15 @@
             <meda-data android:name="android.appwidget.provider"
                     android:resource="@xml/appwidget_info"/>          
         </receiver> 
+        <receiver
+            android:name="com.swipedevelopment.service.PhoneBroadcaster"
+            android:label="@string/app_name"
+            android:icon="@drawable/ic_launcher">
+            <intent-filter >
+                <action android:name="android.intent.action.PHONE_START"/>
+            </intent-filter>
+            
+        </receiver>
         <activity
             android:name="com.swipedevelopment.phonetester.Splash"
             android:screenOrientation="portrait">
@@ -62,7 +71,11 @@
             android:name="com.swipedevelopment.phonetester.WebViewActivity"
             android:theme="@android:style/Theme.NoTitleBar"
             android:hardwareAccelerated="true"/>
-
+		<activity 
+		    android:name="com.swipedevelopment.phonetester.LegalPageActivity"
+		    android:label="@string/menu_about"
+		    android:screenOrientation="portrait"/>
+		   
         <service android:enabled="true" android:name="com.swipedevelopment.service.MyService"></service>
     </application>
 <uses-permission android:name="android.permission.CALL_PHONE"></uses-permission>
@@ -88,7 +101,7 @@
 <uses-permission android:name="android.permission.WRITE_SETTINGS" ></uses-permission>
 <uses-permission android:name="android.permission.NFC"></uses-permission>
 <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>"
  <uses-feature android:name="android.hardware.camera" />
  <uses-feature android:name="android.hardware.camera.autofocus" />
 <uses-feature android:name="android.hardware.location.gps"/>

@@ -4,7 +4,7 @@
     <PreferenceCategory
         android:title="Auto-loop Preference"
         >
-    	<SwitchPreference 
+    	<com.swipedevelopment.phonetester.Pref
             android:key="Checkbox1"
             android:title="Loop Settings"
             android:summaryOn="Auto:On"
@@ -31,17 +31,18 @@
             android:summary="text message here"
             android:dialogTitle="SMS Settings"
             />
-        <ListPreference 
-            android:key="ListPreference2"
-            android:title="SMS Number"
-            android:summary="How many message you want to send"
-            android:dialogTitle="SMS Number"
-            android:entries="@array/sms_array_list"
-            android:entryValues="@array/sms_array_value"
-            />
+
     </PreferenceCategory>
     <PreferenceCategory 
         android:title="Web Settings">
+        <com.swipedevelopment.phonetester.Pref
+            android:key="SwitchPreference2"
+            android:title="Wifi Switch"
+            android:summaryOn="use wifi:On"
+            android:summaryOff="use wifi:Off"
+            android:defaultValue="false"
+            
+            />
         <EditTextPreference
             android:key="EditTextPreference3"
             android:title="Web Browser"
@@ -49,34 +50,26 @@
             
             android:dialogTitle="Web address Settings"
             />
-        <SwitchPreference
-            android:key="SwitchPreference2"
+	 </PreferenceCategory>
+	 <PreferenceCategory 
+        android:title="Youtube Video Settings"> 	
+        <com.swipedevelopment.phonetester.Pref
+            android:key="SwitchPreference3"
             android:title="Wifi Switch"
-            android:summaryOn="Use wifi:On"
+            android:summaryOn="use wifi:On"
             android:summaryOff="use wifi:Off"
             android:defaultValue="false"
-            android:disableDependentsState="false"
+            
             />
-    </PreferenceCategory>
-    <PreferenceCategory 
-        android:title="Youtube Video Settings">
         <ListPreference
             android:key="ListPreference6"
             android:title="Hot Movie trailers list"
             android:summary="Please choose a movie trailer to watch"
-            android:dialogTitle="Video List"
+            android:dialogTitle="Youtube Video List"
             android:entries="@array/video_array_list"
             android:entryValues="@array/video_array_id"
             android:defaultValue="@string/video_default_id"
             />   
-        <SwitchPreference
-            android:key="SwitchPreference3"
-            android:title="Video Wifi Switch"
-            android:summaryOn="Use wifi:On"
-            android:summaryOff="use wifi:Off"
-            android:defaultValue="false"
-            android:disableDependentsState="false"
-            />
     </PreferenceCategory>
     <PreferenceCategory 
         android:title="Ringtone Settings">
@@ -175,7 +168,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:title="Lock Screen Settings">
-        <SwitchPreference 
+        <com.swipedevelopment.phonetester.Pref
             android:key="SwitchPreference4"
             android:title="Lock Screen Switch"
             android:summaryOn="Screen: unlock"
