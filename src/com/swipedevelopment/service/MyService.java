@@ -40,7 +40,7 @@ public class MyService extends IntentService{
 	private static final String TAG = "MyService";
 	public static String SUBJECT ="Swipe Development Bettery Testing";
 	public static String CONTENT = "Testing";
-	String telephoneNum,smsDetail,ringtone,address1,address2,city,state,webBrowser,emailAddress,videoId;
+	String telephoneNum,smsDetail,smsNum,ringtone,address1,address2,city,state,webBrowser,emailAddress,videoId;
 	boolean loopStatus,switchWifi, switchVideoWifi;
 	boolean timer = true;
 	TelephonyAdmin teleAdmin;
@@ -77,7 +77,7 @@ public class MyService extends IntentService{
 		loopStatus = intent.getBooleanExtra("loopStatus", false);
 		telephoneNum = intent.getStringExtra("telephoneNum");
 		smsDetail = intent.getStringExtra("smsDetail");
-
+		smsNum = intent.getStringExtra("smsNUM");
 		ringtone = intent.getStringExtra("ringtone");
 		
 		address1 = intent.getStringExtra("address1");
@@ -253,83 +253,84 @@ public void action(final int sp1Int, final int sp2Int) {
 			}
 		case 2:
 			//SMS
-			if(canSwitch){
-				canSwitch = false;
-				createMessage("SMS is starting...");
-
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						
-						int numSMSSent = 0;
-						while(timer) {
-							try {
-								smsAdmin.sendSMS(telephoneNum, smsDetail);
-//								Log.d(TAG, "msg");
-								try {
-									Thread.sleep(1000);
-								} catch (InterruptedException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								numSMSSent++;
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-						System.out.println("Num SMS sent: " + numSMSSent);
-						timer = true;
-					}
-				}).start();
-				
-				int j = sp2Int*60;
-				for(;j >= 0; j--){
-					System.out.println("SMS time left: " + j + " " + timer);
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					updateProgressBar(false);
-				}
-				timer = false;
-			
-				createMessage("SMS has ended...");
-				break;
-			}else{
-				break;
-			}
 //			if(canSwitch){
-//				createMessage("SMS is staring...");
-////				updateProgressBar(true);
-//				
 //				canSwitch = false;
-//				System.out.println("actionController: SMS is chosen.");
-//				int s = 1;
-//				int smsNumInt = Integer.parseInt(smsNum);
-//				while(s < smsNumInt + 1){
-//					System.out.println("actionController: SMS is chosen");
-//					
-//					smsAdmin.sendSMS(telephoneNum, smsDetail);
-//					System.out.println("actionController: this is No. " + s + " SMS.");
-//				try {
-//					Thread.sleep(1000);
-//					
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}	
-//				updateProgressBar(false);
-//					s++;
+//				createMessage("SMS is starting...");
+//
+//				new Thread(new Runnable() {
+//					@Override
+//					public void run() {
+//						// TODO Auto-generated method stub
+//						
+//						int numSMSSent = 0;
+//						while(timer) {
+//							try {
+//								smsAdmin.sendSMS(telephoneNum, smsDetail);
+////								Log.d(TAG, "msg");
+//								try {
+//									Thread.sleep(1000);
+//								} catch (InterruptedException e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								}
+//								numSMSSent++;
+//							} catch (Exception e) {
+//								e.printStackTrace();
+//							}
+//						}
+//						System.out.println("Num SMS sent: " + numSMSSent);
+//						timer = true;
+//					}
+//				}).start();
+//				
+//				int j = sp2Int*60;
+//				for(;j >= 0; j--){
+//					System.out.println("SMS time left: " + j + " " + timer);
+//					try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					updateProgressBar(false);
 //				}
+//				timer = false;
+//			
 //				createMessage("SMS has ended...");
 //				break;
 //			}else{
-//				createMessage("SMS has ended...");
 //				break;
 //			}
+			if(canSwitch){
+				createMessage("SMS is staring...");
+//				updateProgressBar(true);
+				
+				canSwitch = false;
+				System.out.println("actionController: SMS is chosen.");
+				int s = 1;
+				Log.d(TAG, "smsNUM " + smsNum);
+				int smsNumInt = Integer.parseInt(smsNum);
+				while(s < smsNumInt + 1){
+					System.out.println("actionController: SMS is chosen");
+					
+					smsAdmin.sendSMS(telephoneNum, smsDetail);
+					System.out.println("actionController: this is No. " + s + " SMS.");
+				try {
+					Thread.sleep(1000);
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
+				updateProgressBar(false);
+					s++;
+				}
+				createMessage("SMS has ended...");
+				break;
+			}else{
+				createMessage("SMS has ended...");
+				break;
+			}
 
 		case 3:
 			//wifi
@@ -808,56 +809,62 @@ public void action(final int sp1Int, final int sp2Int) {
 			}
 		case 13: 
 			//voice recorder
-			if(canSwitch){
-				createMessage("Voice Recorder is starting...");
-				canSwitch=false;
-				System.out.println("actionController:Voice recorder is chosen.");
-				recorderAdmin.startRecording();	
-//				updateProgressBar(true);	
-				
-					t13 = new Thread(new Runnable(){
-						
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-							int j = sp2Int*60;
-							System.out.println("initial music run time = " + j);
-							for(;j>= 0 ; j--){
-								System.out.println("recorder time left: " + j);
-								try {
-								     Thread.sleep(1000);
-							    }catch (InterruptedException e) {
-								    // TODO Auto-generated catch block
-								    e.printStackTrace();
-							     }
-
-							}
-						}
-						
-					});
-					t13.start();
-					int j = sp2Int*60;
-					for(;j >= 0; j--){
-		    			System.out.println("recorder time left: " + j);
-		    			try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-							
-						}
-		    			updateProgressBar(false);
-		    			if (j==0){
-		    				recorderAdmin.stopRecording();
-		    				canSwitch = true;
-		    			}
-				    }
-					createMessage("Voice Recorder has ended...");
-					break;
-			}else{
-				createMessage("Voice Recorder has ended...");
-				break;
-			}
+//			if(canSwitch){
+//				createMessage("Voice Recorder is starting...");
+//				canSwitch=false;
+//				System.out.println("actionController:Voice recorder is chosen.");
+//				recorderAdmin.startRecording();	
+////				updateProgressBar(true);	
+//				
+//					t13 = new Thread(new Runnable(){
+//						
+//						@Override
+//						public void run() {
+//							// TODO Auto-generated method stub
+//							int j = sp2Int*60;
+//							System.out.println("initial music run time = " + j);
+//							for(;j>= 0 ; j--){
+//								System.out.println("recorder time left: " + j);
+//								try {
+//								     Thread.sleep(1000);
+//							    }catch (InterruptedException e) {
+//								    // TODO Auto-generated catch block
+//								    e.printStackTrace();
+//							     }
+//
+//							}
+//						}
+//						
+//					});
+//					t13.start();
+//					int j = sp2Int*60;
+//					for(;j >= 0; j--){
+//		    			System.out.println("recorder time left: " + j);
+//		    			try {
+//							Thread.sleep(1000);
+//						} catch (InterruptedException e) {
+//							// TODO Auto-generated catch block
+//							e.printStackTrace();
+//							
+//						}
+//		    			updateProgressBar(false);
+//		    			if (j==0){
+//		    				try {
+//								recorderAdmin.stopRecording();
+//							} catch (Exception e) {
+//								// TODO Auto-generated catch block
+//								e.printStackTrace();
+//							}
+//		    				canSwitch = true;
+//		    			}
+//				    }
+//					createMessage("Voice Recorder has ended...");
+//					break;
+//			}else{
+//				createMessage("Voice Recorder has ended...");
+//				break;
+//			}
+			break;
 		case 14:
 		//Youtube VideoPlayer
 			if(canSwitch){
@@ -922,7 +929,7 @@ public void action(final int sp1Int, final int sp2Int) {
 		}
 	}
 	private void youtubeViewPlay(String video_id){
-		Intent youtubeIntent = new Intent(this, YoutubeActivity.class);
+		Intent youtubeIntent = new Intent(getApplicationContext(), YoutubeActivity.class);
 		youtubeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		youtubeIntent.putExtra("video_id", video_id);
 		this.startActivity(youtubeIntent);

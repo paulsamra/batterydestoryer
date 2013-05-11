@@ -49,7 +49,7 @@ public class RecorderAdmin {
 	    }
 	}
 
-	public void stopRecording() {
+	public void stopRecording() throws Exception{
 	    if (null != recorder) {
 	    	
 	        recorder.stop();

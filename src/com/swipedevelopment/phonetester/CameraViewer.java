@@ -22,9 +22,11 @@ public class CameraViewer extends Activity {
 		if(!isClicked){
 			cameraAdmin.takePicture();
 			isClicked = true;
+			finish();
 		}else{
 			cameraAdmin.voerTack();
 			isClicked = false;
+			finish();
 		}
 	}
 	

@@ -12,7 +12,7 @@
     </string>
     <string name="power_default_value">1</string>
     <string name="video_default_id">1</string>
-
+	<string name="sms_default_value">1</string>
 	<string name="about_swipe"> Welcome to Swipe Development Inc. Swipe Development Inc. and/or its affiliates provide mobile development consulting, specializing in mobile battery drain analysis. Swipe Development provides our services subject to the following conditions. 
 
 By using the Battery Destroyer application, you agree to these conditions. Please read them carefully.</string>

@@ -45,7 +45,7 @@ public class MainActivity extends Activity{
 	public static ProgressBar progressbar;
 	SharedPreferences mySharedPreferences;
 	boolean loop_preference,web_wifi_preference,video_wifi_preference,lock_screen_preference;
-	String telephone_preference,sms_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
+	String telephone_preference,sms_preference,sms_num_preference,ringtone_preference,address_preference1,address_preference2,city_preference,state_preference,volume_preference,
 	power_preference,web_preference,email_preference1,video_preference, brightness_preference;
 	DatabaseManager db_man;
 	public static Context context;
@@ -242,7 +242,7 @@ public class MainActivity extends Activity{
 		serviceIntent.putExtra("loopStatus", loop_preference);
 		serviceIntent.putExtra("telephoneNum",telephone_preference);
 		serviceIntent.putExtra("smsDetail", sms_preference);
-
+		serviceIntent.putExtra("smsNUM", sms_num_preference);
 		serviceIntent.putExtra("ringtone", ringtone_preference);
 		serviceIntent.putExtra("address1", address_preference1);
 		serviceIntent.putExtra("address2", address_preference2);
@@ -282,7 +282,7 @@ public class MainActivity extends Activity{
 		loop_preference = mySharedPreferences.getBoolean("Checkbox1", false);
 		telephone_preference = mySharedPreferences.getString("EditTextPreference1", "");
 		sms_preference = mySharedPreferences.getString("EditTextPreference2", "");
-
+		sms_num_preference = mySharedPreferences.getString("ListPreference2", "1");
 		ringtone_preference = mySharedPreferences.getString("ringtone", "<unset>");
 		
 		//location including 4 parts: address line1&2, city, and state
@@ -307,7 +307,7 @@ public class MainActivity extends Activity{
 		video_wifi_preference = mySharedPreferences.getBoolean("SwitchPreference3", false);
 		//lock screen
 		lock_screen_preference = mySharedPreferences.getBoolean("SwitchPreference4", false);
-		
+		Log.d(TAG, "sms num " + sms_num_preference);
 		Log.d(TAG, "loop: " + loop_preference + "wifi_preference: " + web_wifi_preference + "video_wifi: " + video_wifi_preference +"lock_screen_preference: " + lock_screen_preference);
 	}
 	private void setBrightness(String arg1){

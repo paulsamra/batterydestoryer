@@ -31,7 +31,15 @@
             android:summary="text message here"
             android:dialogTitle="SMS Settings"
             />
-
+	    <ListPreference 
+	        android:key="ListPreference2"
+	        android:title="SMS Number"
+	        android:summary="Please choose how many SMS you want to send"
+            android:dialogTitle="SMS Number"
+            android:entries="@array/sms_array_list"
+            android:entryValues="@array/sms_array_list"
+            android:defaultValue="@string/sms_default_value"
+	        />
     </PreferenceCategory>
     <PreferenceCategory 
         android:title="Web Settings">
